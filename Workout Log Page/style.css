@@ -1,0 +1,91 @@
+body {
+    display: grid;
+    grid-template-columns: 10vw 90vw;
+}
+
+nav.menu {
+    background-color: green;
+}
+
+main {
+    background-color: lightblue;
+}
+
+
+main .workout-container { 
+    display: flex;
+    align-content: flex-start;
+    flex-direction: column;
+
+}
+
+main .workout {
+    border: 3px solid black;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+main .workout .date-type-container{
+    display: flex;
+    flex-direction: row;
+
+    gap: 10px;
+}
+
+main .workout .workout-date {
+    font-size: 30px;
+    font-weight: bold;
+    padding: 10px;
+
+    border: 1px black solid;
+}
+
+main .workout .workout-type {
+    font-size: 30px;
+    font-weight: bold;
+    padding: 10px;
+}
+
+main .workout dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 8px 16px;
+    padding: 10px;
+    border: 1px black dashed;
+}
+
+main .workout dt{
+    grid-column-start: 1;
+    font-weight: bold;
+}
+
+main .workout dd{
+    grid-column-start: 2;
+}
+
+.add-exercise-btn {
+    width: 100%;
+    height: 30px;
+    
+}
+
+main .delete-day-btn {
+    width: 30px;
+    height: 30px;
+    align-self: start;
+    border: 1px black solid;
+    margin-left: auto;
+}
+
+.add-day-btn {
+    width: 80%;
+    height: 50px;
+
+    margin-left: 10%;
+    margin-right: auto;
+}

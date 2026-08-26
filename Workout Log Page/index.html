@@ -1,0 +1,67 @@
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Workout Log</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+
+    <body>
+
+        <!-- Menu Side Bar -->
+        <nav class="menu">
+            Menu
+        </nav>
+
+        <main class="content">
+            <h1>Workout Log</h1>
+
+            <button aria-label="Sort by Date">Newest</button> <!-- Sort by Newest/Oldest button -->
+            <button aria-label="Filter Workout Type">▾</button>    <!-- Drop down to filter the type of workout eg. Upper, Lower, Push -->
+
+            <div class="workout-container">
+
+            <!-- Example Workout Day display -->
+            <!-- Will not appear initially will be added with js -->
+            <article class="workout">
+
+                
+
+                <div class="date-type-container">
+                    <span class="workout-date">9/23/2026</span>
+                    <span class="workout-type">Upper Body</span>
+
+                    <button class="delete-day-btn" aria-label="Delete Workout">-</button>
+                </div>
+
+                <dl class="exercise">      <!-- Each individual exercise -->
+                    <dt>Exercise</dt><dd>Bench Press</dd>
+                    <dt>Weight</dt><dd class="weight" data-value="185" data-unit="lbs">185 lbs</dd>
+                    <dt>Reps</dt><dd>8</dd>
+                </dl>
+
+                <button class="add-exercise-btn" aria-label="Add Exercise">+</button>          <!-- Button to add more exercises -->
+                
+
+
+            </article>
+
+            
+     
+
+            </div>
+
+            <button class="add-day-btn" aria-label="Add Workout">+</button>                  <!-- Button to add a day -->
+        </main>
+
+        <footer>
+        
+        </footer>
+
+    </body>
+
+    
+</html>
