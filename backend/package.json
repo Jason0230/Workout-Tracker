@@ -1,0 +1,29 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend for Workout App",
+  "homepage": "https://github.com/Jason0230/Workout-Tracker#readme",
+  "bugs": {
+    "url": "https://github.com/Jason0230/Workout-Tracker/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jason0230/Workout-Tracker.git"
+  },
+  "license": "MIT",
+  "author": "Jason Li",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-async-handler": "^1.2.0",
+    "mongoose": "^9.9.4",
+    "nodemon": "^3.1.14"
+  }
+}
