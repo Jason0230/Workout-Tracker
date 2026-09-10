@@ -17,13 +17,24 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "postinstall": "prisma skills sync || exit 0"
   },
   "dependencies": {
+    "@prisma/client": "^7.10.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-async-handler": "^1.2.0",
-    "mongoose": "^9.9.4",
     "nodemon": "^3.1.14"
+  },
+  "devDependencies": {
+    "prisma": "^6.19.3"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "workerd@1.20260704.1": true,
+    "msgpackr-extract@3.0.4": true,
+    "@prisma/engines@7.10.0": true,
+    "prisma@7.10.0": true
   }
 }
