@@ -5,6 +5,7 @@ model User {
     email       String
     password    String
     workouts    Workout[]
+    createdAt   DateTime    @default(now())
 }
 
 model Workout {
@@ -12,6 +13,13 @@ model Workout {
     userId      Int
     user        User        @relation(fields: [userId], references: [id])
     date        DateTime
+    sets        Set[]
+}
+
+model Exercise {
+    id          Int         @id @default(autoincrement())
+    name        String
+    category    String
     sets        Set[]
 }
 
@@ -26,8 +34,3 @@ model Set {
     weight_unit String
 }
 
-model Exercise {
-    id          Int         @id @default(autoincrement())
-    name        String
-    category    String
-}
