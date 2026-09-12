@@ -1,3 +1,15 @@
-const {PrismaClient} = require("@prisma/client");
+const {PrismaClient} = require("../generated");
 const prisma = new PrismaClient();
-module.exports = prisma;
+
+const connectDb = async () => {
+  try {
+    await prisma.$connect();
+    console.log("Database connected");
+  } catch (err) {
+    console.error("Database connection failed:", err);
+    process.exit(1);
+  }
+};
+
+module.exports = connectDb;
+module.exports.prisma = prisma;
