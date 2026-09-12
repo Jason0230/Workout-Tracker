@@ -1,13 +1,13 @@
 const asyncHandler = require("express-async-handler");
-const prisma = require("../config/dbConnection")
+const { prisma } = require("../config/dbConnection");
 
 //@desc Get All Exercises
 //@route GET /api/exercise
 //@access public
 const getExercises = asyncHandler(async (req, res) => {
-    const exercises = await prisma.exericse.all();
+    const exercises = await prisma.exercise.findMany();
 
-    return exercises;
+    res.status(200).json(exercises);
 });
 
 //@decs Add an Exercise
@@ -22,16 +22,20 @@ const createExercise = asyncHandler(async (req, res) => {
         throw new Error("All Fields are mandatory")
     }
 
-    const exercise = await Exercise.create({
-        name, category
+    const exercise = await prisma.exercise.create({
+        data: {
+            name, category
+        }
     })
 
     res.status(201).json(exercise);
 });
 
-//desc Get an Exercise
+//@desc Get an Exercise
+//@route GET /api/exercise/:id
+//@access public
 const getExercise = asyncHandler(async (req, res) => {
-    const exercise = await Exercise.findById(req.params.id);
+    const exercise = await prisma.exercise.findUnique({where: {id: Number(req.params.id)}});
 
     if (!exercise) {
         res.status(404);
@@ -46,7 +50,7 @@ const getExercise = asyncHandler(async (req, res) => {
 //@access public
 const updateExercise = asyncHandler(async (req, res) => {
     console.log(req.body);
-    const exercise = await Exercise.findById(req.params.id);
+    const exercise = await prisma.exercise.findUnique({where: {id: Number(req.params.id)}});
 
     if (!exercise) {
         res.status(404);
@@ -59,11 +63,11 @@ const updateExercise = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error("All Fields are mandatory");
     }
-
-    const updatedExercise = await Exercise.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        { returnDocument: 'after', runValidators: true }
+    const updatedExercise = await prisma.exercise.update(
+        {
+            where: {id: Number(req.params.id)},
+            data: {name, category}
+        }
     );
 
     res.status(200).json(updatedExercise);
@@ -73,16 +77,16 @@ const updateExercise = asyncHandler(async (req, res) => {
 //@route DELETE /api/exercise/:id
 //@access public
 const deleteExercise = asyncHandler(async (req, res) => {
-    const exercise = await Exercise.findById(req.params.id);
+    const exercise = await prisma.exercise.findUnique({where: {id: Number(req.params.id)}});
 
     if (!exercise) {
         res.status(404);
         throw new Error("Exercise not Found")
     }
 
-    await Exercise.deleteOne();
+    const deletedExercise = await prisma.exercise.delete({ where: { id: Number(req.params.id) } });
 
-    res.status(200).json(exercise);
+    res.status(200).json(deletedExercise);
 
 });
 
