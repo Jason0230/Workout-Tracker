@@ -1,12 +1,13 @@
 const asyncHandler = require("express-async-handler");
-const Exercise = require("../model/exercise");
+const prisma = require("../config/dbConnection")
 
 //@desc Get All Exercises
 //@route GET /api/exercise
 //@access public
 const getExercises = asyncHandler(async (req, res) => {
-    const exercises = await Exercise.find();
-    res.status(200).json(exercises);
+    const exercises = await prisma.exericse.all();
+
+    return exercises;
 });
 
 //@decs Add an Exercise
