@@ -6,9 +6,9 @@ const {
     getExercise, 
     updateExercise,
     deleteExercise
-    } = require("../controller/exercise")
+    } = require("../controller/exercise");
 
 router.route("/").get(getExercises).post(createExercise);
 router.route("/:id").get(getExercise).put(updateExercise).delete(deleteExercise);
 
-module.exports = router;
+module.exports = router;    
