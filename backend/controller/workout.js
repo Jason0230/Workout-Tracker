@@ -4,7 +4,7 @@ const { prisma } = require("../config/dbConnection");
 //@desc Get All Exercises
 //@route GET /api/exercise
 //@access public
-const getWorkout = asyncHandler(async (req, res) => {
+const getWorkouts = asyncHandler(async (req, res) => {
     const workouts = await prisma.workout.findMany({
             include: {
             sets: {
@@ -15,6 +15,90 @@ const getWorkout = asyncHandler(async (req, res) => {
     res.status(200).json(workouts);
 });
 
-const createWorkout = asyncHandler(async ())
+const createWorkout = asyncHandler(async (req, res) => {
+
+    const { userId, date } = req.body;
+
+    if (!userId || !date) {
+        res.status(400);
+        throw new Error("All fields are Mandatory");
+    }
+
+    const user = await prisma.user.findUnique({
+        where: {id: Number(userId)}
+    });
+
+    if (!user) {
+        res.status(404);
+        throw new Error("User not Found");
+    }
+
+    const workout = await prisma.workout.create({
+        data: {
+            date: new Date(date),
+            userId: Number(userId)
+        }
+    });
+
+    res.status(201).json(workout);
+});
+
+const getWorkout = asyncHandler(async (req, res) => {
+    const workout = await prisma.user.findUnique({
+        where: {id: Number(req.params.id)},
+        include: {
+            sets: {
+                include: { exercise: true },
+        }}
+    });
+
+    if (!workout) {
+        res.status(404);
+        throw new Error("Workout not Found");
+    }
+
+    res.status(200).json(workout);
+});
+
+const updateWorkout = asyncHandler(async (req, res) => {
+    const workout = await prisma.workout.findUnique({
+        where: {id: Number(req.params.id)},
+    });
+
+    if (!workout) {
+        res.status(404);
+        throw new Error("Workout not Found");
+    }
+
+    const { date } = req.body;
+
+    const updatedWorkout = await prisma.workout.update({
+        where: {id: Number(req.params.id)},
+        data: {
+            date: new Date(date)
+        }
+    })
+
+    res.status(200).json(updatedWorkout);
+});
+
+const deleteWorkout = asyncHandler(async (req, res) => {
+    const workout = await prisma.workout.findUnique({
+        where: {id: Number(req.params.id)},
+    });
+
+    if (!workout) {
+        res.status(404);
+        throw new Error("Workout not Found");
+    }
+
+    const deletedWorkout = await prisma.workout.delete({
+        where: {id: Number(req.params.id)},
+    });
+
+    res.status(200).json(deletedWorkout);
+});
+
+
 
 module.exports = { getWorkouts, createWorkout, getWorkout,  updateWorkout, deleteWorkout };
