@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { prisma } = require("../config/dbConnection");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const getUsers = asyncHandler(async (req, res) => {
     const users = await prisma.user.findMany({
@@ -134,6 +135,9 @@ const deleteUser = asyncHandler(async (req, res) => {
     res.status(200).json(deletedUser);
 });
 
+//@desc Login User
+//@route POST /api/user/login
+//@access public
 const loginUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     
@@ -156,12 +160,126 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new Error("Invalid Email or Password");
     }
 
-    //!TODO ADD JWT
-    res.status(200).json({
-        id: user.id,
-        username: user.username,
-        email: user.email,
-    });
-})
+    const accessToken = jwt.sign({ user: { id: user.id, username: user.username, email: user.email } }, 
+                                    process.env.JWT_SECRET,
+                                    { expiresIn: "15m" }
+                                );
+    
+    const refreshToken = jwt.sign(
+        { id: user.id },
+        process.env.JWT_REFRESH_SECRET,
+        { expiresIn: "7d" }
+    );
 
-module.exports = { getUsers, createUser, getUser, updateUser, deleteUser };
+    // set the first refresh token
+    await prisma.user.update({where: {id: user.id}, data: {refreshToken}});
+    
+    res.cookie("jwt", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production", // only HTTPS in prod
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
+    })
+
+    res.status(200).json({ accessToken });
+});
+
+const refreshToken = asyncHandler(async (req, res) => {
+    const cookies = req.cookies;
+
+    if (!cookies) {
+        res.status(401);
+        throw new Error("No refresh token provided")
+    }
+
+    const incomingRefreshToken = cookies.jwt;
+
+    const user = await prisma.user.findFirst(
+        { where: { refreshToken: incomingRefreshToken } }
+    );
+
+    if (!user) {
+        jwt.verify(incomingRefreshToken, process.env.JWT_REFRESH_SECRET, async (err, decoded) => {
+            if (err) {
+                // token is garbage/expired and not tied to anyone — nothing more to do
+                res.status(403);
+                throw new Error("Invalid refresh token");
+            }
+
+            // Token was valid/signed correctly but not found in DB → REUSE DETECTED.
+            // Someone used an old, already-rotated-out token. Revoke that user's session entirely.
+            await prisma.user.update({
+                where: { id: decoded.id },
+                data: { refreshToken: null },
+            });
+
+            res.status(403);
+            throw new Error("Refresh token reuse detected — session revoked");
+        });
+        return;
+    }
+
+    jwt.verify(incomingRefreshToken, process.env.JWT_REFRESH_SECRET, async (err, decoded) => {
+        if (err || user.id !== decoded.id) {
+            res.status(403);
+            throw new Error("Invalid or expired refresh token");
+        }
+
+        const newAccessToken = jwt.sign(
+            { user: { id: user.id, username: user.username, email: user.email } },
+            process.env.JWT_SECRET,
+            { expiresIn: "15m" }
+        );
+
+        const refreshToken = jwt.sign(
+            { id: user.id },
+            process.env.JWT_REFRESH_SECRET,
+            { expiresIn: "7d" }
+        );
+
+        // set the first refresh token
+        await prisma.user.update({where: {id: user.id}, data: {refreshToken}});
+
+        res.cookie("jwt", newRefreshToken, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+        });
+
+        res.status(200).json({ accessToken: newAccessToken });
+    });
+});
+
+const logoutUser = asyncHandler(async (req, res) => {
+
+    const cookies = req.cookies;
+
+    if (!cookies?.jwt) {
+        return res.sendStatus(204); // no content, nothing to do
+    }
+
+    const incomingRefreshToken = cookies.jwt;
+
+    const user = await prisma.user.findFirst({
+        where: { refreshToken: incomingRefreshToken },
+    });
+
+    if (user) {
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { refreshToken: null },
+        });
+    }
+
+    res.clearCookie("jwt", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+    });
+
+    res.sendStatus(204);
+
+});
+
+module.exports = { getUsers, createUser, getUser, updateUser, deleteUser, loginUser, refreshToken, logoutUser };

@@ -98,6 +98,7 @@ exports.Prisma.UserScalarFieldEnum = {
   username: 'username',
   email: 'email',
   password: 'password',
+  refreshToken: 'refreshToken',
   createdAt: 'createdAt'
 };
 
@@ -127,10 +128,16 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 exports.Prisma.UserOrderByRelevanceFieldEnum = {
   username: 'username',
   email: 'email',
-  password: 'password'
+  password: 'password',
+  refreshToken: 'refreshToken'
 };
 
 exports.Prisma.ExerciseOrderByRelevanceFieldEnum = {
@@ -188,7 +195,6 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -197,13 +203,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id        Int       @id @default(autoincrement())\n  username  String\n  email     String\n  password  String\n  workouts  Workout[]\n  createdAt DateTime  @default(now())\n}\n\nmodel Workout {\n  id     Int      @id @default(autoincrement())\n  userId Int\n  user   User     @relation(fields: [userId], references: [id])\n  date   DateTime\n  sets   Set[]\n}\n\nmodel Exercise {\n  id       Int    @id @default(autoincrement())\n  name     String\n  category String\n  sets     Set[]\n}\n\nmodel Set {\n  id          Int      @id @default(autoincrement())\n  workoutId   Int\n  workout     Workout  @relation(fields: [workoutId], references: [id])\n  exerciseId  Int\n  exercise    Exercise @relation(fields: [exerciseId], references: [id])\n  reps        Int\n  weight      Int\n  weight_unit String\n}\n",
-  "inlineSchemaHash": "7e1e319604504e87b1ae83d74d25b2585e527ece598b9e6e97e91961697bad3f",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?\n// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id           Int       @id @default(autoincrement())\n  username     String\n  email        String\n  password     String\n  refreshToken String?\n  workouts     Workout[]\n  createdAt    DateTime  @default(now())\n}\n\nmodel Workout {\n  id     Int      @id @default(autoincrement())\n  userId Int\n  user   User     @relation(fields: [userId], references: [id])\n  date   DateTime\n  sets   Set[]\n}\n\nmodel Exercise {\n  id       Int    @id @default(autoincrement())\n  name     String\n  category String\n  sets     Set[]\n}\n\nmodel Set {\n  id          Int      @id @default(autoincrement())\n  workoutId   Int\n  workout     Workout  @relation(fields: [workoutId], references: [id])\n  exerciseId  Int\n  exercise    Exercise @relation(fields: [exerciseId], references: [id])\n  reps        Int\n  weight      Int\n  weight_unit String\n}\n",
+  "inlineSchemaHash": "d28f2b3930cafc6acb58e9d76daf687b0b63cfc93fff29afdd32aa83e1dfa92f",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"workouts\",\"kind\":\"object\",\"type\":\"Workout\",\"relationName\":\"UserToWorkout\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Workout\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserToWorkout\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sets\",\"kind\":\"object\",\"type\":\"Set\",\"relationName\":\"SetToWorkout\"}],\"dbName\":null},\"Exercise\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sets\",\"kind\":\"object\",\"type\":\"Set\",\"relationName\":\"ExerciseToSet\"}],\"dbName\":null},\"Set\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"workoutId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"workout\",\"kind\":\"object\",\"type\":\"Workout\",\"relationName\":\"SetToWorkout\"},{\"name\":\"exerciseId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"exercise\",\"kind\":\"object\",\"type\":\"Exercise\",\"relationName\":\"ExerciseToSet\"},{\"name\":\"reps\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"weight\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"weight_unit\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"refreshToken\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"workouts\",\"kind\":\"object\",\"type\":\"Workout\",\"relationName\":\"UserToWorkout\"},{\"name\":\"createdAt\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Workout\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"userId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"user\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"UserToWorkout\"},{\"name\":\"date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sets\",\"kind\":\"object\",\"type\":\"Set\",\"relationName\":\"SetToWorkout\"}],\"dbName\":null},\"Exercise\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"category\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sets\",\"kind\":\"object\",\"type\":\"Set\",\"relationName\":\"ExerciseToSet\"}],\"dbName\":null},\"Set\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"workoutId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"workout\",\"kind\":\"object\",\"type\":\"Workout\",\"relationName\":\"SetToWorkout\"},{\"name\":\"exerciseId\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"exercise\",\"kind\":\"object\",\"type\":\"Exercise\",\"relationName\":\"ExerciseToSet\"},{\"name\":\"reps\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"weight\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"weight_unit\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

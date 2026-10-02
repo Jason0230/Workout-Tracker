@@ -19,6 +19,7 @@ model User {
     username    String
     email       String
     password    String
+    refreshToken String?
     workouts    Workout[]
     createdAt   DateTime    @default(now())
 }

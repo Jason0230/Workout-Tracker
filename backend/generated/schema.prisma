@@ -15,12 +15,13 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  username  String
-  email     String
-  password  String
-  workouts  Workout[]
-  createdAt DateTime  @default(now())
+  id           Int       @id @default(autoincrement())
+  username     String
+  email        String
+  password     String
+  refreshToken String?
+  workouts     Workout[]
+  createdAt    DateTime  @default(now())
 }
 
 model Workout {
