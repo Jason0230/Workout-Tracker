@@ -44,8 +44,8 @@ const createWorkout = asyncHandler(async (req, res) => {
 });
 
 const getWorkout = asyncHandler(async (req, res) => {
-    const workout = await prisma.user.findUnique({
-        where: {id: Number(req.params.id)},
+    const workout = await prisma.workout.findUnique({
+        where: { id: Number(req.params.id) },
         include: {
             sets: {
                 include: { exercise: true },

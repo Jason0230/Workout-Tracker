@@ -25,7 +25,7 @@ const createUser = asyncHandler(async (req, res) => {
         throw new Error("All fields are Mandatory");
     }
 
-    const existingUser = await prisma.user.findUnique({
+    const existingUser = await prisma.user.findFirst({
         where: {email}
     });
 
@@ -34,7 +34,7 @@ const createUser = asyncHandler(async (req, res) => {
         throw new Error("User already exists");
     }
 
-    const hashedPassword = bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await prisma.user.create({
         data: {
@@ -93,10 +93,11 @@ const updateUser = asyncHandler(async (req, res) => {
         
     let hashedPassword;
     if (password) {
-        hashedPassword = bcrypt.hash(password, 10);
+        hashedPassword = await bcrypt.hash(password, 10);
     }
 
     const updatedUser = await prisma.user.update({
+        where: { id: Number(req.params.id) },
         data: {
             ...(username && { username }),
             ...(email && { email }),
@@ -146,7 +147,7 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new Error("All fields are Mandatory");
     }
 
-    const user = await prisma.user.findFirst({ where: email });
+    const user = await prisma.user.findFirst({ where: {email} });
 
     if (!user) {
         res.status(401);
@@ -187,7 +188,7 @@ const loginUser = asyncHandler(async (req, res) => {
 const refreshToken = asyncHandler(async (req, res) => {
     const cookies = req.cookies;
 
-    if (!cookies) {
+    if (!cookies?.jwt) {
         res.status(401);
         throw new Error("No refresh token provided")
     }
@@ -231,14 +232,14 @@ const refreshToken = asyncHandler(async (req, res) => {
             { expiresIn: "15m" }
         );
 
-        const refreshToken = jwt.sign(
+        const newRefreshToken = jwt.sign(
             { id: user.id },
             process.env.JWT_REFRESH_SECRET,
             { expiresIn: "7d" }
         );
 
         // set the first refresh token
-        await prisma.user.update({where: {id: user.id}, data: {refreshToken}});
+        await prisma.user.update({ where: { id: user.id }, data: { refreshToken: newRefreshToken } });
 
         res.cookie("jwt", newRefreshToken, {
             httpOnly: true,

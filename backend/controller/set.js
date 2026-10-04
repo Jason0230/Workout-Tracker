@@ -9,7 +9,7 @@ const { prisma } = require("../config/dbConnection");
 //@access public
 const getSets = asyncHandler(async (req, res) => {
     const sets = await prisma.set.findMany({
-            where : {workoutID : Number(req.params.workoutID)},
+            where : { workoutId : Number(req.params.workoutId) },
             include: { exercise: true }
         });
 
