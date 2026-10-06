@@ -4,6 +4,7 @@ const errorHandler = require("./middleware/errorHandler");
 const app = express();
 const connectDb = require("./config/dbConnection")
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 
 const port = process.env.PORT || 5000;
 
@@ -16,6 +17,10 @@ app.use("/api/set", require("./routes/setById"));
 app.use("/api/workout/", require("./routes/workout"));
 app.use("/api/user", require("./routes/user"));
 app.use(errorHandler);
+app.use(cors({
+    origin: "http://127.0.0.1:5500",
+    credentials: true,
+}))
 
 
 app.listen(port, () => {
