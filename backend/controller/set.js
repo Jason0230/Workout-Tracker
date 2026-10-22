@@ -6,7 +6,7 @@ const { prisma } = require("../config/dbConnection");
 
 //@desc Get All Sets for a Workout
 //@route GET /api/workout-exercise/:workoutIdExercise/set
-//@access public
+//@access private
 const getSets = asyncHandler(async (req, res) => {
     const sets = await prisma.set.findMany({
             where : { workoutExerciseId : Number(req.params.workoutExerciseId) },
@@ -18,7 +18,10 @@ const getSets = asyncHandler(async (req, res) => {
 
 //@desc Add a Set to a Workout
 //@route POST /api/workout-exercise/:workoutExerciseId/set
-//@access public
+//@access private
+//@param {Number} reps - Number of repeitions in that set
+//@param {Number} weight - Weight of that set 
+//@param {string} weight_unit - Unit of weight that was used in that set
 const createSet = asyncHandler(async (req, res) => {
     const { reps, weight, weight_unit } = req.body;
 

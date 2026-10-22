@@ -1,9 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const { prisma } = require("../config/dbConnection");
 
-//@desc Get a Single Set by ID
+//@desc Get a Single Set using Id
 //@route GET /api/set/:id
-//@access public
+//@access private
 const getSet = asyncHandler(async (req, res) => {
     const set = await prisma.set.findUnique({
         where: {id: Number(req.params.id)}
@@ -17,9 +17,12 @@ const getSet = asyncHandler(async (req, res) => {
     res.status(200).json(set);
 });
 
-//@desc Update a Set
+//@desc Update a Set using Id
 //@route PUT /api/set/:id
-//@access public
+//@access private
+//@param {Number} reps - Number of repeitions in that set
+//@param {Number} weight - Weight of that set 
+//@param {string} weight_unit - Unit of weight that was used in that set
 const updateSet = asyncHandler(async (req, res) => {
     const set = await prisma.set.findUnique({
         where: {id: Number(req.params.id)}
@@ -47,7 +50,7 @@ const updateSet = asyncHandler(async (req, res) => {
 
 //@desc Delete a Set
 //@route DELETE /api/set/:id
-//@access public
+//@access private
 const deleteSet = asyncHandler(async (req, res) => {
     const set = await prisma.set.findUnique({
         where: { id: Number(req.params.id) },

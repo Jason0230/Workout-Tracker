@@ -3,6 +3,7 @@ const { prisma } = require("../config/dbConnection");
 
 //@desc Add an Exercise to a Workout
 //@route POST /api/workout/:workoutId/exercise
+//@param {Number} exerciseId - connects the exercise to the WorkoutExercise
 const addExerciseToWorkout = asyncHandler (async (req, res) => {
     const { exerciseId } = req.body;
 

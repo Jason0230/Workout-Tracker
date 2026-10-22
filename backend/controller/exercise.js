@@ -1,18 +1,20 @@
 const asyncHandler = require("express-async-handler");
 const { prisma } = require("../config/dbConnection");
 
-//@desc Get All Exercises
+//@desc Gets all Exercises in api
 //@route GET /api/exercise
-//@access public
+//@access private
 const getExercises = asyncHandler(async (req, res) => {
     const exercises = await prisma.exercise.findMany();
 
     res.status(200).json(exercises);
 });
 
-//@decs Add an Exercise
+//@decs Add a new Exercise to the api
 //@route POST /api/exercise
-//@access public
+//@access private
+//@param {string} name - Name of new Exercise
+//@param {string} category - Category for new Exercise
 const createExercise = asyncHandler(async (req, res) => {
     console.log(req.body);
     const { name, category } = req.body;
@@ -31,9 +33,9 @@ const createExercise = asyncHandler(async (req, res) => {
     res.status(201).json(exercise);
 });
 
-//@desc Get an Exercise
+//@desc Get a single Exercise, with id
 //@route GET /api/exercise/:id
-//@access public
+//@access private
 const getExercise = asyncHandler(async (req, res) => {
     const exercise = await prisma.exercise.findUnique({where: {id: Number(req.params.id)}});
 
@@ -45,9 +47,11 @@ const getExercise = asyncHandler(async (req, res) => {
     res.status(200).json(exercise);
 })
 
-//@desc Update Exercise
+//@desc Update an single Exercise, with id
 //@route PUT /api/exercise/:id
-//@access public
+//@access private
+//@param {string} name - New Name of new Exercise
+//@param {string} category - New category for new Exercise
 const updateExercise = asyncHandler(async (req, res) => {
     console.log(req.body);
     const exercise = await prisma.exercise.findUnique({where: {id: Number(req.params.id)}});
@@ -73,7 +77,7 @@ const updateExercise = asyncHandler(async (req, res) => {
     res.status(200).json(updatedExercise);
 });
 
-//@desc Delete Exercise
+//@desc Delete Exercise with id
 //@route DELETE /api/exercise/:id
 //@access public
 const deleteExercise = asyncHandler(async (req, res) => {

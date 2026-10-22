@@ -12,9 +12,9 @@ const workoutInclude = {
 };
 
 
-//@desc Get All Workouts
+//@desc Get all Workouts
 //@route GET /api/workout
-//@access public
+//@access private
 const getWorkouts = asyncHandler(async (req, res) => {
     const workouts = await prisma.workout.findMany({
             include: workoutInclude});
@@ -24,7 +24,9 @@ const getWorkouts = asyncHandler(async (req, res) => {
 
 //@desc Create a Workouts
 //@route POST /api/workout
-//@access public
+//@access private
+//@param {Number} userId
+//@param {DateTime} date
 const createWorkout = asyncHandler(async (req, res) => {
 
     const { userId, date } = req.body;
@@ -53,6 +55,9 @@ const createWorkout = asyncHandler(async (req, res) => {
     res.status(201).json(workout);
 });
 
+//@desc Gets a Workout based on Id
+//@route GET /api/workout/:id
+//@access private
 const getWorkout = asyncHandler(async (req, res) => {
     const workout = await prisma.workout.findUnique({
         where: { id: Number(req.params.id) },
@@ -66,6 +71,11 @@ const getWorkout = asyncHandler(async (req, res) => {
     res.status(200).json(workout);
 });
 
+
+//@desc Updates a Workout based on Id
+//@route PUT /api/workout/:id
+//@access private
+//@param {DateTime} date
 const updateWorkout = asyncHandler(async (req, res) => {
     const workout = await prisma.workout.findUnique({
         where: {id: Number(req.params.id)},
@@ -88,6 +98,9 @@ const updateWorkout = asyncHandler(async (req, res) => {
     res.status(200).json(updatedWorkout);
 });
 
+//@desc Deletes a Workout based on Id
+//@route DELETE /api/workout/:id
+//@access private
 const deleteWorkout = asyncHandler(async (req, res) => {
     const workout = await prisma.workout.findUnique({
         where: {id: Number(req.params.id)},
