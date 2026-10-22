@@ -1,20 +1,30 @@
 const asyncHandler = require("express-async-handler");
 const { prisma } = require("../config/dbConnection");
 
-//@desc Get All Exercises
-//@route GET /api/exercise
+
+const workoutInclude = {
+    workoutExercises: {
+        include: {
+            exercise: true,
+            sets: true,
+        },
+    },
+};
+
+
+//@desc Get All Workouts
+//@route GET /api/workout
 //@access public
 const getWorkouts = asyncHandler(async (req, res) => {
     const workouts = await prisma.workout.findMany({
-            include: {
-            sets: {
-                include: { exercise: true },
-            },
-        }});
+            include: workoutInclude});
 
     res.status(200).json(workouts);
 });
 
+//@desc Create a Workouts
+//@route POST /api/workout
+//@access public
 const createWorkout = asyncHandler(async (req, res) => {
 
     const { userId, date } = req.body;
@@ -46,10 +56,6 @@ const createWorkout = asyncHandler(async (req, res) => {
 const getWorkout = asyncHandler(async (req, res) => {
     const workout = await prisma.workout.findUnique({
         where: { id: Number(req.params.id) },
-        include: {
-            sets: {
-                include: { exercise: true },
-        }}
     });
 
     if (!workout) {

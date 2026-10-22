@@ -5,51 +5,41 @@ const { prisma } = require("../config/dbConnection");
 
 
 //@desc Get All Sets for a Workout
-//@route GET /api/workout/:workoutId/set
+//@route GET /api/workout-exercise/:workoutIdExercise/set
 //@access public
 const getSets = asyncHandler(async (req, res) => {
     const sets = await prisma.set.findMany({
-            where : { workoutId : Number(req.params.workoutId) },
-            include: { exercise: true }
-        });
+            where : { workoutExerciseId : Number(req.params.workoutExerciseId) },
+    });
 
     res.status(200).json(sets);
 });
 
 
 //@desc Add a Set to a Workout
-//@route POST /api/workout/:workoutId/set
+//@route POST /api/workout-exercise/:workoutExerciseId/set
 //@access public
 const createSet = asyncHandler(async (req, res) => {
-    const { exerciseId, reps, weight, weight_unit } = req.body;
+    const { reps, weight, weight_unit } = req.body;
 
     //-----------------------------------------------------------------
     // Error handling
 
-    if (!exerciseId || !reps || !weight || !weight_unit) {
+    if (!reps || !weight || !weight_unit) {
         res.status(400);
         throw new Error("All fields are Mandatory");
     }
 
-    // find associated workout
-    const workout = await prisma.workout.findUnique({
-        where: { id: Number(req.params.workoutId) },
+    // find associated workout exercise
+    const workoutExercise = await prisma.workoutexercise.findUnique({
+        where: { id: Number(req.params.workoutExerciseId) },
     });
 
-    if (!workout) {
+    if (!workoutExercise) {
         res.status(404);
-        throw new Error("Workout not found");
+        throw new Error("Workout Exercise not found");
     }
 
-    // find associated exercise
-     const exercise = await prisma.exercise.findUnique({
-        where: { id: Number(exerciseId) },
-    });
-
-    if (!exercise) {
-        res.status(404);
-        throw new Error("Exercise not Found");
-    }
     //-----------------------------------------------------------------
 
     const newSet = await prisma.set.create({
@@ -57,10 +47,8 @@ const createSet = asyncHandler(async (req, res) => {
             reps,
             weight,
             weight_unit,
-            workoutId: Number(req.params.workoutId),
-            exerciseId: Number(exerciseId)
+            workoutExerciseId: Number(req.params.workoutExerciseId),
         },
-        include: {exercise: true}
     });
 
     res.status(201).json(newSet);

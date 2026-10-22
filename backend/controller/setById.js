@@ -30,7 +30,7 @@ const updateSet = asyncHandler(async (req, res) => {
         throw new Error("Set not Found");
     }
 
-    const { exerciseId, reps, weight, weight_unit } = req.body;
+    const { reps, weight, weight_unit } = req.body;
 
     if (!reps || !weight || !weight_unit) {
         res.status(400);
@@ -39,13 +39,7 @@ const updateSet = asyncHandler(async (req, res) => {
 
     const updatedSet = await prisma.set.update({
         where: { id: Number(req.params.id) },
-        data: {
-            reps,
-            weight,
-            weight_unit,
-            ...(exerciseId && { exerciseId: Number(exerciseId) }),
-        },
-        include: { exercise: true },
+        data: { reps, weight, weight_unit }
     });
 
     res.status(200).json(updatedSet);

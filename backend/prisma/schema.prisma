@@ -29,22 +29,29 @@ model Workout {
     userId      Int
     user        User        @relation(fields: [userId], references: [id])
     date        DateTime
-    sets        Set[]
+    workoutExercises WorkoutExercise[]
 }
 
 model Exercise {
     id          Int         @id @default(autoincrement())
     name        String
     category    String
-    sets        Set[]
+    workoutExercises WorkoutExercise[]
+}
+
+model WorkoutExercise {
+    id         Int      @id @default(autoincrement())
+    workoutId  Int
+    workout    Workout  @relation(fields: [workoutId], references: [id], onDelete: Cascade)
+    exerciseId Int
+    exercise   Exercise @relation(fields: [exerciseId], references: [id])
+    sets       Set[]
 }
 
 model Set {
     id          Int         @id @default(autoincrement())
-    workoutId   Int
-    workout     Workout     @relation(fields: [workoutId], references: [id])
-    exerciseId  Int
-    exercise    Exercise    @relation(fields: [exerciseId], references: [id])
+    workoutExerciseId Int
+    workoutExercise   WorkoutExercise @relation(fields: [workoutExerciseId], references: [id], onDelete: Cascade)
     reps        Int
     weight      Int
     weight_unit String

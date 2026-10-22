@@ -142,10 +142,15 @@ exports.Prisma.ExerciseScalarFieldEnum = {
   category: 'category'
 };
 
-exports.Prisma.SetScalarFieldEnum = {
+exports.Prisma.WorkoutExerciseScalarFieldEnum = {
   id: 'id',
   workoutId: 'workoutId',
-  exerciseId: 'exerciseId',
+  exerciseId: 'exerciseId'
+};
+
+exports.Prisma.SetScalarFieldEnum = {
+  id: 'id',
+  workoutExerciseId: 'workoutExerciseId',
   reps: 'reps',
   weight: 'weight',
   weight_unit: 'weight_unit'
@@ -182,6 +187,7 @@ exports.Prisma.ModelName = {
   User: 'User',
   Workout: 'Workout',
   Exercise: 'Exercise',
+  WorkoutExercise: 'WorkoutExercise',
   Set: 'Set'
 };
 
