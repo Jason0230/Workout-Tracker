@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 
 const validateToken = (req, res, next) => {
+    console.log("AUTH HEADER:", req.headers.authorization);
+
     const authHeader = req.headers.authorization;
 
     // Not authorizes
@@ -20,3 +22,5 @@ const validateToken = (req, res, next) => {
         next(new Error("Token is invalid or expired"));
     }
 };
+
+module.exports = validateToken;

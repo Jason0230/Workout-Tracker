@@ -7,4 +7,4 @@ const {
 
 router.route("/:id").delete(removeExerciseFromWorkout);
 
-module.exports = router;    
+module.exports = router;

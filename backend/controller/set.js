@@ -8,8 +8,23 @@ const { prisma } = require("../config/dbConnection");
 //@route GET /api/workout-exercise/:workoutIdExercise/set
 //@access private
 const getSets = asyncHandler(async (req, res) => {
+    // verify the parent exists AND belongs to the user
+    const workoutExercise = await prisma.workoutExercise.findFirst({
+        where: {
+            id: Number(req.params.workoutExerciseId),
+            workout: { userId: req.user.id },
+        },
+    });
+
+    if (!workoutExercise) {
+        res.status(404);
+        throw new Error("Workout exercise not Found");
+    }
+
     const sets = await prisma.set.findMany({
-            where : { workoutExerciseId : Number(req.params.workoutExerciseId) },
+            where : { 
+                workoutExerciseId : Number(req.params.workoutExerciseId) 
+            },
     });
 
     res.status(200).json(sets);
@@ -28,16 +43,16 @@ const createSet = asyncHandler(async (req, res) => {
     //-----------------------------------------------------------------
     // Error handling
 
-    if (!reps || !weight || !weight_unit) {
+    if (reps == null || weight == null || !weight_unit) {
         res.status(400);
         throw new Error("All fields are Mandatory");
     }
 
     // find associated workout exercise
-    const workoutExercise = await prisma.workoutexercise.findUnique({
-        where: { 
+    const workoutExercise = await prisma.workoutExercise.findFirst({
+        where: {    
             id: Number(req.params.workoutExerciseId),
-            workoutExercise: {workout: { userId: req.user.id }}
+            workout: { userId: req.user.id }
         },
     });
 

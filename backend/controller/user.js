@@ -18,7 +18,7 @@ const createUser = asyncHandler(async (req, res) => {
     }
 
     const existingUser = await prisma.user.findFirst({
-        where: {email}
+        where: { email }
     });
 
     if (existingUser) {
@@ -312,4 +312,4 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 });
 
-module.exports = { getUsers, createUser, getUser, updateUser, deleteUser, loginUser, refreshToken, logoutUser };
+module.exports = { createUser, getUser, updateUser, deleteUser, loginUser, refreshToken, logoutUser };

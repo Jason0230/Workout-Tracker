@@ -7,7 +7,7 @@ const { prisma } = require("../config/dbConnection");
 const getSet = asyncHandler(async (req, res) => {
     const set = await prisma.set.findFirst({
         where: {id: Number(req.params.id),
-        workoutExercise: { workout: { userId } } }
+        workoutExercise: { workout: { userId: req.user.id } } }
     });
 
     if (!set) {
@@ -28,7 +28,7 @@ const updateSet = asyncHandler(async (req, res) => {
     const set = await prisma.set.findFirst({
         where: {
             id: Number(req.params.id), 
-            workoutExercise: { workout: { userId } }
+            workoutExercise: { workout: { userId: req.user.id } }
         }
     });
 
@@ -59,7 +59,7 @@ const deleteSet = asyncHandler(async (req, res) => {
     const set = await prisma.set.findFirst({
         where: { 
             id: Number(req.params.id),
-            workoutExercise: { workout: { userId } }
+            workoutExercise: { workout: { userId: req.user.id } }
         },
     });
 
