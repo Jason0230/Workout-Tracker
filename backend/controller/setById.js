@@ -5,8 +5,9 @@ const { prisma } = require("../config/dbConnection");
 //@route GET /api/set/:id
 //@access private
 const getSet = asyncHandler(async (req, res) => {
-    const set = await prisma.set.findUnique({
-        where: {id: Number(req.params.id)}
+    const set = await prisma.set.findFirst({
+        where: {id: Number(req.params.id),
+        workoutExercise: { workout: { userId } } }
     });
 
     if (!set) {
@@ -24,8 +25,11 @@ const getSet = asyncHandler(async (req, res) => {
 //@param {Number} weight - Weight of that set 
 //@param {string} weight_unit - Unit of weight that was used in that set
 const updateSet = asyncHandler(async (req, res) => {
-    const set = await prisma.set.findUnique({
-        where: {id: Number(req.params.id)}
+    const set = await prisma.set.findFirst({
+        where: {
+            id: Number(req.params.id), 
+            workoutExercise: { workout: { userId } }
+        }
     });
 
     if (!set) {
@@ -52,8 +56,11 @@ const updateSet = asyncHandler(async (req, res) => {
 //@route DELETE /api/set/:id
 //@access private
 const deleteSet = asyncHandler(async (req, res) => {
-    const set = await prisma.set.findUnique({
-        where: { id: Number(req.params.id) },
+    const set = await prisma.set.findFirst({
+        where: { 
+            id: Number(req.params.id),
+            workoutExercise: { workout: { userId } }
+        },
     });
 
     if (!set) {

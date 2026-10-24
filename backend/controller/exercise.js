@@ -37,6 +37,7 @@ const createExercise = asyncHandler(async (req, res) => {
 //@route GET /api/exercise/:id
 //@access private
 const getExercise = asyncHandler(async (req, res) => {
+
     const exercise = await prisma.exercise.findUnique({where: {id: Number(req.params.id)}});
 
     if (!exercise) {
@@ -79,7 +80,7 @@ const updateExercise = asyncHandler(async (req, res) => {
 
 //@desc Delete Exercise with id
 //@route DELETE /api/exercise/:id
-//@access public
+//@access private
 const deleteExercise = asyncHandler(async (req, res) => {
     const exercise = await prisma.exercise.findUnique({where: {id: Number(req.params.id)}});
 

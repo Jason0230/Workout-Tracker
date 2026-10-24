@@ -13,17 +13,19 @@ app.use(cors({
     credentials: true,
 }));
 
+const validateToken = require("./middleware/validateTokenHandler");
 
 connectDb();
 app.use(express.json());
 app.use(cookieParser());
-app.use("/api/exercise", require("./routes/exercise"));
-app.use("/api/workout-exercise/:workoutIdExercise/set", require("./routes/set"));
-app.use("/api/set", require("./routes/setById"));
-app.use("/api/workout", require("./routes/workout"));
-app.use("/api/workout-exercise", require("./routes/workoutExerciseById"));
-app.use("/api/user", require("./routes/user"));
+app.use("/api/exercise", validateToken, require("./routes/exercise"));
+app.use("/api/workout-exercise/:workoutIdExercise/set", validateToken, require("./routes/set"));
+app.use("/api/set", validateToken, require("./routes/setById"));
+app.use("/api/workout", validateToken, require("./routes/workout"));
+app.use("/api/workout-exercise", validateToken, require("./routes/workoutExerciseById"));
+app.use("/api/user", validateToken, require("./routes/user"));
 app.use(errorHandler);
+
 
 
 app.listen(port, () => {

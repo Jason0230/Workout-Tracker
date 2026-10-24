@@ -11,10 +11,13 @@ const {
     logoutUser
     } = require("../controller/user");
 
-router.route("/").get(getUsers).post(createUser);
+const validateToken = require("../middleware/validateTokenHandler");
+
+router.route("/").post(createUser);
 router.route("/login").post(loginUser);
 router.route("/refresh").post(refreshToken);
 router.route("/logout").post(logoutUser);
-router.route("/:id").get(getUser).put(updateUser).delete(deleteUser);
+
+router.route("/:id").all(validateToken).get(getUser).put(updateUser).delete(deleteUser);
 
 module.exports = router;    

@@ -42,9 +42,9 @@ const addExerciseToWorkout = asyncHandler (async (req, res) => {
 //@desc Remove an Exercise from a Workout (cascade deletes its sets)
 //@route DELETE /api/workout-exercise/:id
 const removeExerciseFromWorkout = asyncHandler(async (req, res) => {
-    const existing = await prisma.workoutexercise.findUnique( 
-        { where: { id:Number(req.id) } }
-    );
+    const existing = await prisma.workoutexercise.findFirst( 
+        { where: { id:Number(req.id), workout: { userId: req.user.id } } 
+    });
 
     if (!existing) {
         res.status(404);

@@ -3,23 +3,6 @@ const { prisma } = require("../config/dbConnection");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-//@desc Gets all Users on the api, excludes their password
-//@route GET /api/user
-//@access private
-const getUsers = asyncHandler(async (req, res) => {
-    const users = await prisma.user.findMany({
-        select: {
-            id: true,
-            username: true,
-            email: true,
-            createdAt: true,
-            // exclude password
-        }
-    });
-
-    res.status(200).json(users);
-}); 
-
 //@desc Creates a new User (Register)
 //@route POST /api/user
 //@access public
@@ -66,6 +49,12 @@ const createUser = asyncHandler(async (req, res) => {
 //@route GET /api/user/:id
 //@access private
 const getUser = asyncHandler(async (req, res) => {
+    // check user token is equal to user param
+    if (Number(req.params.id) != req.user.id) {
+        res.status(403);
+        throw new Error("Forbidden");
+    }
+
     const user = await prisma.user.findUnique({
         where: {id: Number(req.params.id)},
         select: {
@@ -91,6 +80,11 @@ const getUser = asyncHandler(async (req, res) => {
 //@param {string} email - Must be unique to other users
 //@param {string} password
 const updateUser = asyncHandler(async (req, res) => {
+    // check user token is equal to user param
+    if (Number(req.params.id) != req.user.id) {
+        res.status(403);
+        throw new Error("Forbidden");
+    }
 
     const user = await prisma.user.findUnique({
         where: {id: Number(req.params.id)},
@@ -136,6 +130,12 @@ const updateUser = asyncHandler(async (req, res) => {
 //@route DELETE /api/user/:id
 //@access private
 const deleteUser = asyncHandler(async (req, res) => {
+    // check user token is equal to user param
+    if (Number(req.params.id) != req.user.id) {
+        res.status(403);
+        throw new Error("Forbidden");
+    }
+
     const user = await prisma.user.findUnique({
         where: { id: Number(req.params.id) },
     });

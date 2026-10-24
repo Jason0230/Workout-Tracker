@@ -35,7 +35,10 @@ const createSet = asyncHandler(async (req, res) => {
 
     // find associated workout exercise
     const workoutExercise = await prisma.workoutexercise.findUnique({
-        where: { id: Number(req.params.workoutExerciseId) },
+        where: { 
+            id: Number(req.params.workoutExerciseId),
+            workoutExercise: {workout: { userId: req.user.id }}
+        },
     });
 
     if (!workoutExercise) {
