@@ -17,7 +17,7 @@ const workoutInclude = {
 //@access private
 const getWorkouts = asyncHandler(async (req, res) => {
     const workouts = await prisma.workout.findMany({
-            where: {userId:req.user.id},
+            where: { userId: req.user.id },
             include: workoutInclude,
             orderBy: { date: "desc" },
         });
@@ -88,7 +88,7 @@ const updateWorkout = asyncHandler(async (req, res) => {
     const { date } = req.body;
 
     const updatedWorkout = await prisma.workout.update({
-        where: {id: Number(req.params.id)},
+        where: { id: Number(req.params.id) },
         data: {
             date: new Date(date)
         }

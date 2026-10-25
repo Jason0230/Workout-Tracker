@@ -6,8 +6,10 @@ const { prisma } = require("../config/dbConnection");
 //@access private
 const getSet = asyncHandler(async (req, res) => {
     const set = await prisma.set.findFirst({
-        where: {id: Number(req.params.id),
-        workoutExercise: { workout: { userId: req.user.id } } }
+        where: { 
+            id: Number(req.params.id),
+            workoutExercise: { workout: { userId: req.user.id } } 
+        }
     });
 
     if (!set) {

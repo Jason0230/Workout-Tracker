@@ -1,16 +1,16 @@
 
-export default function Set() {
+export default function Set( { reps, weight, unit, index, onDelete } ) {
     return (
         <div className="setPanel">
-            <text>Set Panel</text>
+            <label>Set #{index+1} </label>
+            <label>Reps: {reps}, Weight: {weight}, unit: {unit} </label>
+            <RemoveSetButton onDelete={onDelete} index={index}/>
         </div>
     );
 }
 
-function AddSetButton() {
-
-}
-
-function RemoveSetButton() {
-
+function RemoveSetButton( {onDelete, index} ) {
+    return(
+        <button onClick={() => onDelete(index)}>-</button>
+    );
 }
