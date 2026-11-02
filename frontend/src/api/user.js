@@ -47,3 +47,6 @@ export const deleteUser = (id) => {
     setAccessToken(null);
     return deleted
 }
+
+// Get /api/user/me (private) returns user info
+export const getMe = () => apiFetch("user/me");
