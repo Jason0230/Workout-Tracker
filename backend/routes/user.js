@@ -7,7 +7,8 @@ const {
     deleteUser,
     loginUser, 
     refreshToken, 
-    logoutUser
+    logoutUser,
+    getMe 
     } = require("../controller/user");
 
 const validateToken = require("../middleware/validateTokenHandler");
@@ -17,6 +18,7 @@ router.route("/login").post(loginUser);
 router.route("/refresh").post(refreshToken);
 router.route("/logout").post(logoutUser);
 
+router.route("/me").get(validateToken, getMe)
 router.route("/:id").all(validateToken).get(getUser).put(updateUser).delete(deleteUser);
 
 module.exports = router;    

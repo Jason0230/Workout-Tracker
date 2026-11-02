@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const { prisma } = require("../config/dbConnection");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { dmmfToRuntimeDataModel } = require("../generated/runtime/library");
 
 //@desc Creates a new User (Register)
 //@route POST /api/user
@@ -312,4 +313,15 @@ const logoutUser = asyncHandler(async (req, res) => {
 
 });
 
-module.exports = { createUser, getUser, updateUser, deleteUser, loginUser, refreshToken, logoutUser };
+//@desc Gets user info
+//@route GET /api/user/getMe
+//@access private
+const getMe = asyncHandler(async (req, res) => {
+    const user = await prisma.user.findUnique({
+        where: { id: req.user.id },
+        select: { id: true, username: true, email: true, createdAt: true }
+    })
+    res.status(200).json(user);
+});
+
+module.exports = { createUser, getUser, updateUser, deleteUser, loginUser, refreshToken, logoutUser, getMe };
