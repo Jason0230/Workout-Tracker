@@ -1,6 +1,7 @@
 // contains a list of set components
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { getSets, createSet, updateSet, deleteSet } from "../api/set";
 import Set from "./Set";
 
 /* 
@@ -9,20 +10,51 @@ import Set from "./Set";
     
     Adding new set
 */
-export default function ExercisePanel( { name, category, index, onDelete } ) {
+export default function ExercisePanel( { name, category, onDelete, exerciseId } ) {
 
     const [sets, setSets] = useState([]);
+
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+    
+
     // toggles the set form
     const [addButtonIsVisible, setAddButtonIsVisible] = useState(true);
 
-    const createSet = (reps, weight, unit) => {
-        setSets([...sets, { reps: parseInt(reps), weight: parseInt(weight), unit } ]);
-        // remove from from DOM and replace with add set button again
-        setAddButtonIsVisible(true);
+    useEffect(() => {
+        let ignore = false;
+
+        getSets(exerciseId)
+            .then((data) => { if (!ignore) setSets(data); })
+            .catch((err) => { if (!ignore) setError(err.message); })
+            .finally(() => { if (!ignore) setLoading(false); });
+
+        return () => { ignore = true }; 
+
+    }, []);
+
+    const handleAddSet = async (reps, weight, weight_unit) => {
+        try {
+            const createdSet = await createSet(exerciseId, { reps: parseInt(reps), weight: parseFloat(weight), weight_unit });
+
+            setSets([...sets, createdSet]);
+            // remove from from DOM and replace with add set button again
+            setAddButtonIsVisible(true);
+        }
+        catch (err) {
+            setError(err.message);
+        }
     }
 
-    const deleteSet = (index) => {
-        setSets(sets.filter((_, i) => i != index));
+    const handleDeleteSet = async (setId) => {
+        try {
+            await deleteSet(setId);
+            setSets(sets.filter((e) => e.id != setId));
+        }
+        catch (err) {
+            setError(err.message);
+        }
+        
     }
 
     return (
@@ -30,31 +62,28 @@ export default function ExercisePanel( { name, category, index, onDelete } ) {
             <label>Exercise Panel</label> <br/>
             <label> Exercise: {name}, Category: {category}</label>
 
-            {/* Display current sets here */}
+            {error && <p role="alert">{error}</p>}
+
             <ul>
-                {sets.map((s, index) => 
-                    <>
+                {sets.map((set, index) => 
+                    <li key={set.id}>
                         <Set 
-                            reps={s.reps}
-                            weight={s.weight}
-                            unit={s.unit}
+                            reps={set.reps}
+                            weight={set.weight}
                             index={index}
-                            onDelete={deleteSet}/>
-                    </>
+                            unit={set.weight_unit}
+                            onDelete={() => handleDeleteSet(set.id)}/>
+                    </li>
                 )}
 
             </ul>
 
-            {/* new set form here */}
-
             { addButtonIsVisible ? 
-                <AddSetButton onClick={() => setAddButtonIsVisible(false)}/> : <SetForm onSuccessfulSubmit={createSet}/>
+                <AddSetButton onClick={() => setAddButtonIsVisible(false)}/> : <SetForm onSuccessfulSubmit={handleAddSet}/>
             }
 
-            <RemoveExerciseButton onClick={() => onDelete(index)}/>
+            <RemoveExerciseButton onClick={() => onDelete(exerciseId)}/>
                 
-             
-            
 
         </div>
     );

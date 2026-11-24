@@ -53,6 +53,7 @@ model Set {
     workoutExerciseId Int
     workoutExercise   WorkoutExercise @relation(fields: [workoutExerciseId], references: [id], onDelete: Cascade)
     reps        Int
-    weight      Int
+    order       Int         // the order of which set is first..last
+    weight      Float
     weight_unit String
 }

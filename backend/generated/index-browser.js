@@ -152,6 +152,7 @@ exports.Prisma.SetScalarFieldEnum = {
   id: 'id',
   workoutExerciseId: 'workoutExerciseId',
   reps: 'reps',
+  order: 'order',
   weight: 'weight',
   weight_unit: 'weight_unit'
 };

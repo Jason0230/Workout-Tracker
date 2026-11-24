@@ -1,7 +1,23 @@
+import { Routes, Route } from "react-router-dom";
 import WorkoutLog from "./components/WorkoutLog";
+import Login from "./pages/Login";
+import Register from "./pages/Register"
+import ProtectedRoute from "./components/ProtectedRoute";
+
 
 export default function App() {
     return (
-        <WorkoutLog />
+        <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route
+                path="/"
+                element={
+                    <ProtectedRoute>
+                        <WorkoutLog />
+                    </ProtectedRoute>
+                }
+            />
+        </Routes>
     );
 }

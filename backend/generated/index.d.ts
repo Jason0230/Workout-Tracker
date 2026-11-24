@@ -5249,6 +5249,7 @@ export namespace Prisma {
     id: number | null
     workoutExerciseId: number | null
     reps: number | null
+    order: number | null
     weight: number | null
   }
 
@@ -5256,6 +5257,7 @@ export namespace Prisma {
     id: number | null
     workoutExerciseId: number | null
     reps: number | null
+    order: number | null
     weight: number | null
   }
 
@@ -5263,6 +5265,7 @@ export namespace Prisma {
     id: number | null
     workoutExerciseId: number | null
     reps: number | null
+    order: number | null
     weight: number | null
     weight_unit: string | null
   }
@@ -5271,6 +5274,7 @@ export namespace Prisma {
     id: number | null
     workoutExerciseId: number | null
     reps: number | null
+    order: number | null
     weight: number | null
     weight_unit: string | null
   }
@@ -5279,6 +5283,7 @@ export namespace Prisma {
     id: number
     workoutExerciseId: number
     reps: number
+    order: number
     weight: number
     weight_unit: number
     _all: number
@@ -5289,6 +5294,7 @@ export namespace Prisma {
     id?: true
     workoutExerciseId?: true
     reps?: true
+    order?: true
     weight?: true
   }
 
@@ -5296,6 +5302,7 @@ export namespace Prisma {
     id?: true
     workoutExerciseId?: true
     reps?: true
+    order?: true
     weight?: true
   }
 
@@ -5303,6 +5310,7 @@ export namespace Prisma {
     id?: true
     workoutExerciseId?: true
     reps?: true
+    order?: true
     weight?: true
     weight_unit?: true
   }
@@ -5311,6 +5319,7 @@ export namespace Prisma {
     id?: true
     workoutExerciseId?: true
     reps?: true
+    order?: true
     weight?: true
     weight_unit?: true
   }
@@ -5319,6 +5328,7 @@ export namespace Prisma {
     id?: true
     workoutExerciseId?: true
     reps?: true
+    order?: true
     weight?: true
     weight_unit?: true
     _all?: true
@@ -5414,6 +5424,7 @@ export namespace Prisma {
     id: number
     workoutExerciseId: number
     reps: number
+    order: number
     weight: number
     weight_unit: string
     _count: SetCountAggregateOutputType | null
@@ -5441,6 +5452,7 @@ export namespace Prisma {
     id?: boolean
     workoutExerciseId?: boolean
     reps?: boolean
+    order?: boolean
     weight?: boolean
     weight_unit?: boolean
     workoutExercise?: boolean | WorkoutExerciseDefaultArgs<ExtArgs>
@@ -5452,11 +5464,12 @@ export namespace Prisma {
     id?: boolean
     workoutExerciseId?: boolean
     reps?: boolean
+    order?: boolean
     weight?: boolean
     weight_unit?: boolean
   }
 
-  export type SetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "workoutExerciseId" | "reps" | "weight" | "weight_unit", ExtArgs["result"]["set"]>
+  export type SetOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "workoutExerciseId" | "reps" | "order" | "weight" | "weight_unit", ExtArgs["result"]["set"]>
   export type SetInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     workoutExercise?: boolean | WorkoutExerciseDefaultArgs<ExtArgs>
   }
@@ -5470,6 +5483,7 @@ export namespace Prisma {
       id: number
       workoutExerciseId: number
       reps: number
+      order: number
       weight: number
       weight_unit: string
     }, ExtArgs["result"]["set"]>
@@ -5845,7 +5859,8 @@ export namespace Prisma {
     readonly id: FieldRef<"Set", 'Int'>
     readonly workoutExerciseId: FieldRef<"Set", 'Int'>
     readonly reps: FieldRef<"Set", 'Int'>
-    readonly weight: FieldRef<"Set", 'Int'>
+    readonly order: FieldRef<"Set", 'Int'>
+    readonly weight: FieldRef<"Set", 'Float'>
     readonly weight_unit: FieldRef<"Set", 'String'>
   }
     
@@ -6265,6 +6280,7 @@ export namespace Prisma {
     id: 'id',
     workoutExerciseId: 'workoutExerciseId',
     reps: 'reps',
+    order: 'order',
     weight: 'weight',
     weight_unit: 'weight_unit'
   };
@@ -6570,7 +6586,8 @@ export namespace Prisma {
     id?: IntFilter<"Set"> | number
     workoutExerciseId?: IntFilter<"Set"> | number
     reps?: IntFilter<"Set"> | number
-    weight?: IntFilter<"Set"> | number
+    order?: IntFilter<"Set"> | number
+    weight?: FloatFilter<"Set"> | number
     weight_unit?: StringFilter<"Set"> | string
     workoutExercise?: XOR<WorkoutExerciseScalarRelationFilter, WorkoutExerciseWhereInput>
   }
@@ -6579,6 +6596,7 @@ export namespace Prisma {
     id?: SortOrder
     workoutExerciseId?: SortOrder
     reps?: SortOrder
+    order?: SortOrder
     weight?: SortOrder
     weight_unit?: SortOrder
     workoutExercise?: WorkoutExerciseOrderByWithRelationInput
@@ -6592,7 +6610,8 @@ export namespace Prisma {
     NOT?: SetWhereInput | SetWhereInput[]
     workoutExerciseId?: IntFilter<"Set"> | number
     reps?: IntFilter<"Set"> | number
-    weight?: IntFilter<"Set"> | number
+    order?: IntFilter<"Set"> | number
+    weight?: FloatFilter<"Set"> | number
     weight_unit?: StringFilter<"Set"> | string
     workoutExercise?: XOR<WorkoutExerciseScalarRelationFilter, WorkoutExerciseWhereInput>
   }, "id">
@@ -6601,6 +6620,7 @@ export namespace Prisma {
     id?: SortOrder
     workoutExerciseId?: SortOrder
     reps?: SortOrder
+    order?: SortOrder
     weight?: SortOrder
     weight_unit?: SortOrder
     _count?: SetCountOrderByAggregateInput
@@ -6617,7 +6637,8 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Set"> | number
     workoutExerciseId?: IntWithAggregatesFilter<"Set"> | number
     reps?: IntWithAggregatesFilter<"Set"> | number
-    weight?: IntWithAggregatesFilter<"Set"> | number
+    order?: IntWithAggregatesFilter<"Set"> | number
+    weight?: FloatWithAggregatesFilter<"Set"> | number
     weight_unit?: StringWithAggregatesFilter<"Set"> | string
   }
 
@@ -6814,6 +6835,7 @@ export namespace Prisma {
 
   export type SetCreateInput = {
     reps: number
+    order: number
     weight: number
     weight_unit: string
     workoutExercise: WorkoutExerciseCreateNestedOneWithoutSetsInput
@@ -6823,13 +6845,15 @@ export namespace Prisma {
     id?: number
     workoutExerciseId: number
     reps: number
+    order: number
     weight: number
     weight_unit: string
   }
 
   export type SetUpdateInput = {
     reps?: IntFieldUpdateOperationsInput | number
-    weight?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    weight?: FloatFieldUpdateOperationsInput | number
     weight_unit?: StringFieldUpdateOperationsInput | string
     workoutExercise?: WorkoutExerciseUpdateOneRequiredWithoutSetsNestedInput
   }
@@ -6838,7 +6862,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     workoutExerciseId?: IntFieldUpdateOperationsInput | number
     reps?: IntFieldUpdateOperationsInput | number
-    weight?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    weight?: FloatFieldUpdateOperationsInput | number
     weight_unit?: StringFieldUpdateOperationsInput | string
   }
 
@@ -6846,13 +6871,15 @@ export namespace Prisma {
     id?: number
     workoutExerciseId: number
     reps: number
+    order: number
     weight: number
     weight_unit: string
   }
 
   export type SetUpdateManyMutationInput = {
     reps?: IntFieldUpdateOperationsInput | number
-    weight?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    weight?: FloatFieldUpdateOperationsInput | number
     weight_unit?: StringFieldUpdateOperationsInput | string
   }
 
@@ -6860,7 +6887,8 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     workoutExerciseId?: IntFieldUpdateOperationsInput | number
     reps?: IntFieldUpdateOperationsInput | number
-    weight?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    weight?: FloatFieldUpdateOperationsInput | number
     weight_unit?: StringFieldUpdateOperationsInput | string
   }
 
@@ -7163,6 +7191,17 @@ export namespace Prisma {
     exerciseId?: SortOrder
   }
 
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type WorkoutExerciseScalarRelationFilter = {
     is?: WorkoutExerciseWhereInput
     isNot?: WorkoutExerciseWhereInput
@@ -7178,6 +7217,7 @@ export namespace Prisma {
     id?: SortOrder
     workoutExerciseId?: SortOrder
     reps?: SortOrder
+    order?: SortOrder
     weight?: SortOrder
     weight_unit?: SortOrder
   }
@@ -7186,6 +7226,7 @@ export namespace Prisma {
     id?: SortOrder
     workoutExerciseId?: SortOrder
     reps?: SortOrder
+    order?: SortOrder
     weight?: SortOrder
   }
 
@@ -7193,6 +7234,7 @@ export namespace Prisma {
     id?: SortOrder
     workoutExerciseId?: SortOrder
     reps?: SortOrder
+    order?: SortOrder
     weight?: SortOrder
     weight_unit?: SortOrder
   }
@@ -7201,6 +7243,7 @@ export namespace Prisma {
     id?: SortOrder
     workoutExerciseId?: SortOrder
     reps?: SortOrder
+    order?: SortOrder
     weight?: SortOrder
     weight_unit?: SortOrder
   }
@@ -7209,7 +7252,24 @@ export namespace Prisma {
     id?: SortOrder
     workoutExerciseId?: SortOrder
     reps?: SortOrder
+    order?: SortOrder
     weight?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type WorkoutCreateNestedManyWithoutUserInput = {
@@ -7448,6 +7508,14 @@ export namespace Prisma {
     connect?: WorkoutExerciseWhereUniqueInput
   }
 
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type WorkoutExerciseUpdateOneRequiredWithoutSetsNestedInput = {
     create?: XOR<WorkoutExerciseCreateWithoutSetsInput, WorkoutExerciseUncheckedCreateWithoutSetsInput>
     connectOrCreate?: WorkoutExerciseCreateOrConnectWithoutSetsInput
@@ -7594,6 +7662,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type WorkoutCreateWithoutUserInput = {
@@ -7809,6 +7893,7 @@ export namespace Prisma {
 
   export type SetCreateWithoutWorkoutExerciseInput = {
     reps: number
+    order: number
     weight: number
     weight_unit: string
   }
@@ -7816,6 +7901,7 @@ export namespace Prisma {
   export type SetUncheckedCreateWithoutWorkoutExerciseInput = {
     id?: number
     reps: number
+    order: number
     weight: number
     weight_unit: string
   }
@@ -7897,7 +7983,8 @@ export namespace Prisma {
     id?: IntFilter<"Set"> | number
     workoutExerciseId?: IntFilter<"Set"> | number
     reps?: IntFilter<"Set"> | number
-    weight?: IntFilter<"Set"> | number
+    order?: IntFilter<"Set"> | number
+    weight?: FloatFilter<"Set"> | number
     weight_unit?: StringFilter<"Set"> | string
   }
 
@@ -8005,27 +8092,31 @@ export namespace Prisma {
   export type SetCreateManyWorkoutExerciseInput = {
     id?: number
     reps: number
+    order: number
     weight: number
     weight_unit: string
   }
 
   export type SetUpdateWithoutWorkoutExerciseInput = {
     reps?: IntFieldUpdateOperationsInput | number
-    weight?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    weight?: FloatFieldUpdateOperationsInput | number
     weight_unit?: StringFieldUpdateOperationsInput | string
   }
 
   export type SetUncheckedUpdateWithoutWorkoutExerciseInput = {
     id?: IntFieldUpdateOperationsInput | number
     reps?: IntFieldUpdateOperationsInput | number
-    weight?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    weight?: FloatFieldUpdateOperationsInput | number
     weight_unit?: StringFieldUpdateOperationsInput | string
   }
 
   export type SetUncheckedUpdateManyWithoutWorkoutExerciseInput = {
     id?: IntFieldUpdateOperationsInput | number
     reps?: IntFieldUpdateOperationsInput | number
-    weight?: IntFieldUpdateOperationsInput | number
+    order?: IntFieldUpdateOperationsInput | number
+    weight?: FloatFieldUpdateOperationsInput | number
     weight_unit?: StringFieldUpdateOperationsInput | string
   }
 

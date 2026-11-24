@@ -1,6 +1,5 @@
 import { apiFetch, setAccessToken } from "./api";
 
-//!TODO get me to know id of the user
 
 // POST /api/user (public)
 export const register = (username, email, password) => 
@@ -49,4 +48,4 @@ export const deleteUser = (id) => {
 }
 
 // Get /api/user/me (private) returns user info
-export const getMe = () => apiFetch("user/me");
+export const getMe = () => apiFetch("/user/me");

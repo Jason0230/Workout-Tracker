@@ -44,14 +44,39 @@ const addExerciseToWorkout = asyncHandler (async (req, res) => {
     res.status(201).json(workoutExercise);
 });
 
+//@desc Get all Exercises from a Workout
+//@route GET /api/workout/:workoutId/exercise
+const getExerciseFromWorkout = asyncHandler(async (req, res) => {
+    const workoutId = Number(req.params.workoutId);
+
+    const workout = await prisma.workout.findFirst({
+        where: { id: workoutId, userId: req.user.id },
+    });
+
+    if (!workout) {
+        res.status(404);
+        throw new Error("Workout not found");
+    }
+
+    const exercises = await prisma.workoutExercise.findMany( {
+        where: { workoutId,
+                 workout: { userId: req.user.id }},
+        include: { exercise: true, sets: true },
+    });
+
+    res.status(200).json(exercises);
+});
+
 //@desc Remove an Exercise from a Workout (cascade deletes its sets)
-//@route DELETE /api/workout-exercise/:id
+//@route DELETE /api/workout/:workoutId/exercise/:workoutExerciseId
 const removeExerciseFromWorkout = asyncHandler(async (req, res) => {
     const existing = await prisma.workoutExercise.findFirst( { 
-        where: { id : Number(req.params.id),
-        workout: { userId: req.user.id } 
-    } 
-    });
+        where: {
+            id: Number(req.params.workoutExerciseId),
+            workoutId: Number(req.params.workoutId),
+            workout: { userId: req.user.id },
+        },
+    } );
 
     if (!existing) {
         res.status(404);
@@ -65,4 +90,4 @@ const removeExerciseFromWorkout = asyncHandler(async (req, res) => {
     res.status(200).json(existing);
 });
 
-module.exports = { addExerciseToWorkout, removeExerciseFromWorkout };
+module.exports = { addExerciseToWorkout, getExerciseFromWorkout, removeExerciseFromWorkout };

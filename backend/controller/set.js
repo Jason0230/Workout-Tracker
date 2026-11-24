@@ -25,6 +25,7 @@ const getSets = asyncHandler(async (req, res) => {
             where : { 
                 workoutExerciseId : Number(req.params.workoutExerciseId) 
             },
+            orderBy: { order: "asc" },
     });
 
     res.status(200).json(sets);
@@ -39,6 +40,7 @@ const getSets = asyncHandler(async (req, res) => {
 //@param {string} weight_unit - Unit of weight that was used in that set
 const createSet = asyncHandler(async (req, res) => {
     const { reps, weight, weight_unit } = req.body;
+    const workoutExerciseId = Number(req.params.workoutExerciseId);
 
     //-----------------------------------------------------------------
     // Error handling
@@ -51,7 +53,7 @@ const createSet = asyncHandler(async (req, res) => {
     // find associated workout exercise
     const workoutExercise = await prisma.workoutExercise.findFirst({
         where: {    
-            id: Number(req.params.workoutExerciseId),
+            id: workoutExerciseId,
             workout: { userId: req.user.id }
         },
     });
@@ -63,11 +65,20 @@ const createSet = asyncHandler(async (req, res) => {
 
     //-----------------------------------------------------------------
 
+    // get the "last set" to get the order
+    const lastSet = await prisma.set.findFirst({
+        where: { workoutExerciseId },
+        orderBy: { order: "desc" },
+    });
+
+    const nextOrder = lastSet ? lastSet.order + 1 : 1;
+
     const newSet = await prisma.set.create({
         data : {
             reps,
             weight,
             weight_unit,
+            order: nextOrder,
             workoutExerciseId: Number(req.params.workoutExerciseId),
         },
     });
