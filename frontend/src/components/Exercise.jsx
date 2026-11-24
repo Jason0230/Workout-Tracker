@@ -92,7 +92,7 @@ export default function ExercisePanel( { name, category, onDelete, exerciseId } 
 function SetForm( { onSuccessfulSubmit } ) {
     const [reps, setReps] = useState("");
     const [weight, setWeight] = useState("");
-    const [unit, setUnit] = useState("");
+    const [unit, setUnit] = useState("lb");
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -135,13 +135,15 @@ function SetForm( { onSuccessfulSubmit } ) {
                 <br/>
 
                 <label>Weight Unit: </label>
-                <input
+                <select 
                     name="unit"
-                    type="text" 
-                    value={unit} 
-                    title="lb or kg"
-                    pattern="lb|kg"
-                    onChange={(e) => setUnit(e.target.value)} />
+                    value={unit}
+                    onChange={(e) => setUnit(e.target.value)}
+                    >
+                    <option>lb</option>
+                    <option>kg</option>
+                </select>
+                
                 <br/>
 
                 <button type="submit">Submit</button>

@@ -23,24 +23,8 @@ export default function WorkoutLog() {
             .catch((err) => { if (!ignore) setError(err.message); })
             .finally(() => { if (!ignore) setLoading(false); });
 
-        getExercises()
-            .then((data) => { if (!ignore) setExerciseList(data); })
-            .catch((err) => { if (!ignore) setError(err.message); })
-            .finally(() => { if (!ignore) setLoading(false); });
-    
         return () => { ignore = true }; 
     }, []);
-
-
-    const getExerciseId = (name) => {
-        exerciseList.forEach((exercise) => {
-            if (exercise.name == name) {
-                return exercise.id;
-            }
-        });
-
-        return 2;
-    }
 
 
     const handleCreateWorkout = async (date) => {
@@ -54,10 +38,10 @@ export default function WorkoutLog() {
         }
     }
 
-    const handleDeleteWorkout = async (index) => {
+    const handleDeleteWorkout = async (workoutId) => {
         try {
-            await deleteWorkout(workouts[index].id);
-            setWorkouts(workouts.filter((_, i) => i != index));
+            await deleteWorkout(workoutId);
+            setWorkouts(workouts.filter((w) => w.id != workoutId));
         }
         catch (err) {
             setError(err.message);
@@ -73,14 +57,12 @@ export default function WorkoutLog() {
             {error && <p role="alert">{error}</p>}
 
             <ul>
-                {workouts.map((w, index) => 
-                    <li key={workouts[index].id}>
+                {workouts.map((w) => 
+                    <li key={w.id}>
                         <WorkoutPanel 
                             date={w.date} 
-                            index={index} 
-                            onDelete={() => handleDeleteWorkout(index)}
-                            workoutId={ workouts[index].id }
-                            getExerciseId={getExerciseId}
+                            onDelete={() => handleDeleteWorkout(w.id)}
+                            workoutId={ w.id }
                         />
                     </li>
                 )}
@@ -116,8 +98,8 @@ function WorkoutForm( { onSuccessfulSubmit } ) {
         <>
         <label>Add Workout</label>
         <form type="submit" onSubmit={handleSubmit}>
-            <input
-                type="text"
+            Date: <input
+                type="date"
                 value={date}
                 name="date"
                 onChange={(e) => setDate(e.target.value)}

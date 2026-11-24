@@ -3,13 +3,24 @@
 import { useState, useEffect } from 'react';
 import ExercisePanel from "./Exercise";
 import { addExerciseToWorkout, getExerciseFromWorkout, removeExerciseFromWorkout } from "../api/workoutExercise";
+import { getExercises } from '../api/exercise';
 
-export default function WorkoutPanel( { date, index, onDelete, workoutId, getExerciseId } ) {
+export default function WorkoutPanel( { date, onDelete, workoutId } ) {
     const [exercises, setExercises] = useState([]);
+    const [exerciseList, setExerciseList] = useState([]); // list of exercises
+
     // toggles the exercise form
     const [addButtonIsVisible, setAddButtonIsVisible] = useState(true);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    // convert date into a format
+    date = new Date(date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        timeZone: "UTC",
+    });
 
     useEffect(() => {
         let ignore = false;   // avoids setting state from a stale/duplicate run
@@ -19,19 +30,18 @@ export default function WorkoutPanel( { date, index, onDelete, workoutId, getExe
             .catch((err) => { if (!ignore) setError(err.message); })
             .finally(() => { if (!ignore) setLoading(false); });
 
+        getExercises()
+            .then((data) => { if (!ignore) setExerciseList(data); })
+            .catch((err) => { if (!ignore) setError(err.message); })
+            .finally(() => { if (!ignore) setLoading(false); });
+
         return () => { ignore = true }; 
     }, []);
 
 
-    const handleAddExercise = async (name) => {
+    const handleAddExercise = async (exerciseId) => {
         try {
             setError("");
-            const exerciseId = await getExerciseId(name);
-
-            if (!exerciseId) {
-                setError(`Exercise "${name}" not found.`);
-                return;
-            }
 
             const createdExercise = await addExerciseToWorkout(workoutId, { exerciseId });
             setExercises([...exercises, createdExercise]);
@@ -75,30 +85,24 @@ export default function WorkoutPanel( { date, index, onDelete, workoutId, getExe
             
             { addButtonIsVisible ? 
                 <AddExerciseButton onClick={() => setAddButtonIsVisible(false)}/> :
-                <ExerciseForm onSuccessfulSubmit={ handleAddExercise }/>}
+                <ExerciseForm onSuccessfulSubmit={ handleAddExercise } exerciseList={exerciseList}/>}
             
-            <RemoveWorkoutButton onClick={() => onDelete(index)}/>
+            <RemoveWorkoutButton onClick={onDelete}/>
         </div>
     );
 }
 
 /* Form component to add information for new exercise */
-function ExerciseForm( { onSuccessfulSubmit } ) {
-    const [name, setName] = useState("");
+function ExerciseForm( { onSuccessfulSubmit, exerciseList } ) {
+    const [exerciseId, setExerciseId] = useState("");
 
     const handleSubmit = (event) => {
-        // 1. Prevent the default browser page refresh
         event.preventDefault();
-
-        const formData = new FormData(event.currentTarget);
-
-        const name = formData.get("name");
-        const category = "category";
-
+        
         // check if exercise is valid
-        if (name != "") {
-            onSuccessfulSubmit(name, category);
-            setName("");
+        if (exerciseId != "") {
+            onSuccessfulSubmit(Number(exerciseId));
+            setExerciseId("");
         }
     };
 
@@ -106,13 +110,22 @@ function ExerciseForm( { onSuccessfulSubmit } ) {
     <>
         <label> Add New Exercise: </label>
         <form type="submit" onSubmit={ handleSubmit }>
-            <label>Name: </label> 
-            <input 
-                type="text"
-                value={name}
-                name="name"
-                onChange={(e) => setName(e.target.value)}/>
-            <br/>
+
+            <select 
+                value={exerciseId}
+                onChange={(e) => setExerciseId(e.target.value)}
+                required>
+                <option value="" disabled>-- Select an Exercise --</option>
+
+                {exerciseList.map( (ex) => (
+                    <option key={ex.id} value={ex.id}>
+                    {ex.name} ({ex.category})
+                    </option>
+                ))}
+
+                <option value="">-- Add New Exercise --</option>
+
+            </select>
 
             <button type="submit">Submit</button>
 
