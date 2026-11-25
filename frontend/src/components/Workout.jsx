@@ -1,16 +1,19 @@
-// contains a list of exercise components
+import "./Workout.css"
 
 import { useState, useEffect } from 'react';
+
 import ExercisePanel from "./Exercise";
+import Modal from "./Modal"
+
 import { addExerciseToWorkout, getExerciseFromWorkout, removeExerciseFromWorkout } from "../api/workoutExercise";
 import { getExercises } from '../api/exercise';
+
 
 export default function WorkoutPanel( { date, onDelete, workoutId } ) {
     const [exercises, setExercises] = useState([]);
     const [exerciseList, setExerciseList] = useState([]); // list of exercises
+    const [modalIsOpen, setModalIsOpen] = useState(false);
 
-    // toggles the exercise form
-    const [addButtonIsVisible, setAddButtonIsVisible] = useState(true);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
@@ -45,7 +48,7 @@ export default function WorkoutPanel( { date, onDelete, workoutId } ) {
 
             const createdExercise = await addExerciseToWorkout(workoutId, { exerciseId });
             setExercises([...exercises, createdExercise]);
-            setAddButtonIsVisible(true);
+            setModalIsOpen(false);
         }
         catch (err) {
             setError(err.message);
@@ -65,11 +68,11 @@ export default function WorkoutPanel( { date, onDelete, workoutId } ) {
     return (
         <div className="workoutPanel">
 
-            <label>Workout, Date: {date}</label>
+            <label className="workoutPanelLabel">{date}</label>
 
             {error && <p role="alert">{error}</p>}
 
-            <ul>
+            <ul className="exerciseList">
                 {exercises.map((e) => 
                     <li key={e.id}>  
                         <ExercisePanel 
@@ -83,9 +86,11 @@ export default function WorkoutPanel( { date, onDelete, workoutId } ) {
                 )}
             </ul>
             
-            { addButtonIsVisible ? 
-                <AddExerciseButton onClick={() => setAddButtonIsVisible(false)}/> :
-                <ExerciseForm onSuccessfulSubmit={ handleAddExercise } exerciseList={exerciseList}/>}
+            <AddExerciseButton onClick={() => setModalIsOpen(true)}/>
+
+            <Modal isOpen={modalIsOpen} title={"Add Exercise"} onClose={() => setModalIsOpen(false)}>
+                <ExerciseForm onSuccessfulSubmit={ handleAddExercise } exerciseList={exerciseList}/>
+            </Modal>
             
             <RemoveWorkoutButton onClick={onDelete}/>
         </div>

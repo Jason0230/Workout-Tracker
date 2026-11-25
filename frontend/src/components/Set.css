@@ -1,0 +1,47 @@
+.setPanel, .set-header {
+    display: grid;
+    grid-template-columns: 60px 1fr 1fr 70px 36px;
+    gap: 8px;
+    align-items: center;
+}
+
+set-header {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
+}
+
+.setLabel {
+    text-align: center;
+}
+
+.setPanel {
+  margin: 6px 0;
+}
+
+.setPanel input::selection {
+    background-color: black;
+}
+
+.setPanel input, select {
+    width: 100%;
+    min-width: 0;
+    min-height: 25px;
+    background-color: var(--card);
+    color: var(--text);
+    border: solid 2px var(--text);
+    border-radius: 8px;
+}
+
+
+.setPanel span {
+    width: 100%;
+    min-width: 0;
+    text-align: center;
+    border: 1px solid;
+    border-radius: 10px;
+    border-color: aliceblue;
+}

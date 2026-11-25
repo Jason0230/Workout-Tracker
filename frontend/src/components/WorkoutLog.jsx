@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react'
-import WorkoutPanel from './Workout'
+import { useState, useEffect } from 'react';
+
+import WorkoutPanel from './Workout';
+import Modal from "./Modal";
+
 import { getWorkouts, createWorkout, deleteWorkout, updateWorkout } from "../api/workout";
-import { getExercises } from '../api/exercise';
 
 // contains the code for workoutlog
 // Contains a list of Workout components
 
 export default function WorkoutLog() {
     const [workouts, setWorkouts] = useState([]);
-    const [exerciseList, setExerciseList] = useState([]); // list of exercises
-    const [addButtonIsVisible, setAddButtonIsVisible] = useState(true);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -31,7 +32,7 @@ export default function WorkoutLog() {
         try {
             const createdWorkout = await createWorkout({ date });
             setWorkouts([...workouts, createdWorkout]);
-            setAddButtonIsVisible(true);
+            setModalIsOpen(false);
         } 
         catch (err) {
             setError(err.message);
@@ -68,10 +69,11 @@ export default function WorkoutLog() {
                 )}
             </ul>
 
-            {addButtonIsVisible ? 
-                <AddWorkoutButton onClick={() => setAddButtonIsVisible(false)}/> : 
-                <WorkoutForm onSuccessfulSubmit={ handleCreateWorkout }/>   
-            }
+            <AddWorkoutButton onClick={() => setModalIsOpen(true)}/>
+
+            <Modal isOpen={modalIsOpen} title={"Add Workout"} onClose={() => setModalIsOpen(false)}>
+                <WorkoutForm onSuccessfulSubmit={ handleCreateWorkout }/>
+            </Modal>
             
         </>
     );

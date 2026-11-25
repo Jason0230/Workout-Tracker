@@ -1,4 +1,6 @@
 // contains a list of set components
+import "./Exercise.css";
+import "./Set.css";
 
 import { useState, useEffect } from 'react';
 import { getSets, createSet, updateSet, deleteSet } from "../api/set";
@@ -16,10 +18,6 @@ export default function ExercisePanel( { name, category, onDelete, exerciseId } 
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    
-
-    // toggles the set form
-    const [addButtonIsVisible, setAddButtonIsVisible] = useState(true);
 
     useEffect(() => {
         let ignore = false;
@@ -33,15 +31,23 @@ export default function ExercisePanel( { name, category, onDelete, exerciseId } 
 
     }, []);
 
-    const handleAddSet = async (reps, weight, weight_unit) => {
-        try {
-            const createdSet = await createSet(exerciseId, { reps: parseInt(reps), weight: parseFloat(weight), weight_unit });
+    // acts as a preset
+    const handleQuickAddSet = async () => {
+        const lastSet = sets[sets.length - 1];
+        const newSetData = lastSet
+            ? { reps: lastSet.reps, weight: lastSet.weight, weight_unit: lastSet.weight_unit }
+            : { reps: 0, weight: 0, weight_unit: "lb" };
 
-            setSets([...sets, createdSet]);
-            // remove from from DOM and replace with add set button again
-            setAddButtonIsVisible(true);
-        }
-        catch (err) {
+        const createdSet = await createSet(exerciseId, newSetData);
+        setSets((prev) => [...prev, createdSet]);
+    };
+
+    const handleUpdateSet = async (setId, updatedData) => {
+        try {
+            setError("");
+            const savedSet = await updateSet(setId, updatedData);
+            setSets((prev) => prev.map((s) => (s.id === setId ? savedSet : s)));
+        } catch (err) {
             setError(err.message);
         }
     }
@@ -59,113 +65,37 @@ export default function ExercisePanel( { name, category, onDelete, exerciseId } 
 
     return (
         <div className="exercisePanel">
-            <label>Exercise Panel</label> <br/>
-            <label> Exercise: {name}, Category: {category}</label>
+            <label className="exercisePanelLabel"> Exercise: {name}, Category: {category}</label>
 
             {error && <p role="alert">{error}</p>}
 
-            <ul>
+            {sets.length > 0 && (
+                <div className="set-header">
+                    <span className="setLabel">Set</span>
+                    <span>Reps</span>
+                    <span>Weight</span>
+                    <span>Unit</span>
+                    <span></span> {/* Empty header for the delete button column */}
+                </div>
+            )}
+
+            <ul className="setList">
                 {sets.map((set, index) => 
                     <li key={set.id}>
-                        <Set 
-                            reps={set.reps}
-                            weight={set.weight}
+                        <Set
+                            set={set}
                             index={index}
-                            unit={set.weight_unit}
-                            onDelete={() => handleDeleteSet(set.id)}/>
+                            onUpdate={handleUpdateSet}
+                            onDelete={handleDeleteSet}
+                            />
                     </li>
                 )}
 
             </ul>
-
-            { addButtonIsVisible ? 
-                <AddSetButton onClick={() => setAddButtonIsVisible(false)}/> : <SetForm onSuccessfulSubmit={handleAddSet}/>
-            }
-
-            <RemoveExerciseButton onClick={() => onDelete(exerciseId)}/>
-                
+            
+            <button onClick={handleQuickAddSet}> Add Set </button>
+            <button onClick={() => onDelete(exerciseId)}> Remove Exercise </button> 
 
         </div>
     );
 }
-
-function SetForm( { onSuccessfulSubmit } ) {
-    const [reps, setReps] = useState("");
-    const [weight, setWeight] = useState("");
-    const [unit, setUnit] = useState("lb");
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-
-        const formData = new FormData(event.currentTarget);
-        const reps = formData.get("reps");
-        const weight = formData.get("weight");
-        const unit = formData.get("unit");
-
-        if (reps != "" && weight != "") {
-            onSuccessfulSubmit(reps, weight, unit);
-            setReps("");
-            setWeight("");
-            setUnit("");
-        }
-    }
-
-    return (
-        <>
-            <form type="Submit" onSubmit={handleSubmit}>
-
-                <label>Reps: </label>
-                <input
-                    name="reps"
-                    type="number"
-                    pattern="\d*"
-                    title="Only numbers are allowed"
-                    value={reps} 
-                    onChange={(e) => setReps(e.target.value)} />
-                <br/>
-
-                <label>Weight: </label>
-                <input
-                    name="weight"
-                    type="number"
-                    pattern="\d*"
-                    title="Only numbers are allowed"
-                    value={weight} 
-                    onChange={(e) => setWeight(e.target.value)} />
-                <br/>
-
-                <label>Weight Unit: </label>
-                <select 
-                    name="unit"
-                    value={unit}
-                    onChange={(e) => setUnit(e.target.value)}
-                    >
-                    <option>lb</option>
-                    <option>kg</option>
-                </select>
-                
-                <br/>
-
-                <button type="submit">Submit</button>
-
-            </form>
-
-            
-        </>
-
-    );
-}
-
-// enables visibility for setform
-function AddSetButton( { onClick } ) {
-    return (
-        <button onClick={onClick}> Add Set </button>
-    );
-}
-
-function RemoveExerciseButton( { onClick } ) {
-    return (
-        <button onClick={onClick}> Remove Exercise </button> 
-    );
-}
-

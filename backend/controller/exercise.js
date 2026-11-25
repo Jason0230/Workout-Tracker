@@ -5,7 +5,15 @@ const { prisma } = require("../config/dbConnection");
 //@route GET /api/exercise
 //@access private
 const getExercises = asyncHandler(async (req, res) => {
-    const exercises = await prisma.exercise.findMany();
+    const exercises = await prisma.exercise.findMany( {
+        where: {
+            OR: [
+            { userId: null },
+            { userId: req.user.id },
+            ],
+        },
+        orderBy: { name: "asc" },
+    } );
 
     res.status(200).json(exercises);
 });
@@ -26,7 +34,7 @@ const createExercise = asyncHandler(async (req, res) => {
 
     const exercise = await prisma.exercise.create({
         data: {
-            name, category
+            name, category, userId: req.user.id
         }
     })
 
@@ -38,7 +46,14 @@ const createExercise = asyncHandler(async (req, res) => {
 //@access private
 const getExercise = asyncHandler(async (req, res) => {
 
-    const exercise = await prisma.exercise.findUnique({where: {id: Number(req.params.id)}});
+    const exercise = await prisma.exercise.findUnique({
+        where: { 
+            id: Number(req.params.id),
+            OR: [ 
+                { userId: Number(req.params.id) },
+                { userId: null }]
+        }
+    });
 
     if (!exercise) {
         res.status(404);
@@ -54,8 +69,11 @@ const getExercise = asyncHandler(async (req, res) => {
 //@param {string} name - New Name of new Exercise
 //@param {string} category - New category for new Exercise
 const updateExercise = asyncHandler(async (req, res) => {
-    console.log(req.body);
-    const exercise = await prisma.exercise.findUnique({where: {id: Number(req.params.id)}});
+    const exercise = await prisma.exercise.findUnique({ 
+        where: {
+            id: Number(req.params.id),
+            userId: req.user.id         // can only edit own exercises
+        }});
 
     if (!exercise) {
         res.status(404);
@@ -70,8 +88,12 @@ const updateExercise = asyncHandler(async (req, res) => {
     }
     const updatedExercise = await prisma.exercise.update(
         {
-            where: {id: Number(req.params.id)},
-            data: {name, category}
+            where: { 
+                id: Number(req.params.id),
+                userId: req.user.id 
+            },
+
+            data: { name, category }
         }
     );
 
@@ -82,14 +104,23 @@ const updateExercise = asyncHandler(async (req, res) => {
 //@route DELETE /api/exercise/:id
 //@access private
 const deleteExercise = asyncHandler(async (req, res) => {
-    const exercise = await prisma.exercise.findUnique({where: {id: Number(req.params.id)}});
+    const exercise = await prisma.exercise.findUnique({
+        where: {
+            id: Number(req.params.id)
+        }
+    });
 
     if (!exercise) {
         res.status(404);
         throw new Error("Exercise not Found")
     }
 
-    const deletedExercise = await prisma.exercise.delete({ where: { id: Number(req.params.id) } });
+    const deletedExercise = await prisma.exercise.delete({ 
+        where: { 
+            id: Number(req.params.id),
+            userId: req.user.id
+        } 
+    });
 
     res.status(200).json(deletedExercise);
 

@@ -41,7 +41,7 @@ const updateSet = asyncHandler(async (req, res) => {
 
     const { reps, weight, weight_unit } = req.body;
 
-    if (!reps || !weight || !weight_unit) {
+    if (reps == null || weight == null || !weight_unit) {
         res.status(400);
         throw new Error("All Fields are mandatory");
     }

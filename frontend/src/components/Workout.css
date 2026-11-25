@@ -1,0 +1,29 @@
+
+/* Flex Child */
+.workoutPanel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    min-width: 500px;
+    max-width: 90%;
+    min-height: 100px;
+    padding: 10px;
+    
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+}
+
+.workoutPanelLabel {
+    font-size: 30px;
+    margin: 5px;
+    margin-inline: 20px;
+}
+
+/* Flex Container */
+.exerciseList {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}

@@ -15,13 +15,14 @@ datasource db {
 }
 
 model User {
-  id           Int       @id @default(autoincrement())
+  id           Int        @id @default(autoincrement())
   username     String
-  email        String    @unique
+  email        String     @unique
   password     String
   refreshToken String?
   workouts     Workout[]
-  createdAt    DateTime  @default(now())
+  exercises    Exercise[]
+  createdAt    DateTime   @default(now())
 }
 
 model Workout {
@@ -34,9 +35,13 @@ model Workout {
 
 model Exercise {
   id               Int               @id @default(autoincrement())
+  userId           Int? // null = default exercise all users have access
+  user             User?             @relation(fields: [userId], references: [id], onDelete: Cascade)
   name             String
   category         String
   workoutExercises WorkoutExercise[]
+
+  @@unique([name, userId]) // prevents a user from creating duplicate names
 }
 
 model WorkoutExercise {
