@@ -4,16 +4,22 @@ import WorkoutPanel from './Workout';
 import Modal from "./Modal";
 
 import { getWorkouts, createWorkout, deleteWorkout, updateWorkout } from "../api/workout";
+import { getExercises } from '../api/exercise';
+import { useAuth } from "../context/AuthContext";
 
 // contains the code for workoutlog
 // Contains a list of Workout components
 
 export default function WorkoutLog() {
+    const { logout } = useAuth();
+
     const [workouts, setWorkouts] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+
+    const [exerciseList, setExercistList] = useState([]);
 
     // initial load (get workouts from api)
     useEffect(() => {
@@ -21,6 +27,11 @@ export default function WorkoutLog() {
 
         getWorkouts()
             .then((data) => { if (!ignore) setWorkouts(data); })
+            .catch((err) => { if (!ignore) setError(err.message); })
+            .finally(() => { if (!ignore) setLoading(false); });
+
+        getExercises()
+            .then((data) => { if (!ignore) setExercistList(data); })
             .catch((err) => { if (!ignore) setError(err.message); })
             .finally(() => { if (!ignore) setLoading(false); });
 
@@ -49,10 +60,16 @@ export default function WorkoutLog() {
         }
     }
 
-     if (loading) return <p>Loading...</p>;
+    const handleAddExercise = async (newExercise) => {
+        setExercistList((prev) => [...prev, newExercise]);
+    }
+
+    if (loading) return <p>Loading...</p>;
 
     return (
         <>
+            <button onClick={logout}>Logout</button>
+
             <label> Workout Log </label>
 
             {error && <p role="alert">{error}</p>}
@@ -64,6 +81,8 @@ export default function WorkoutLog() {
                             date={w.date} 
                             onDelete={() => handleDeleteWorkout(w.id)}
                             workoutId={ w.id }
+                            handleCreateExercise={handleAddExercise}
+                            availableExercises={exerciseList}
                         />
                     </li>
                 )}
@@ -83,13 +102,8 @@ function WorkoutForm( { onSuccessfulSubmit } ) {
     const [date, setDate] = useState("");
 
     const handleSubmit = (event) => {
-        // 1. Prevent the default browser page refresh
         event.preventDefault();
 
-        const formData = new FormData(event.currentTarget);
-
-        const date = formData.get("date");
-        // check if exercise is valid
         if (date != "") {
             onSuccessfulSubmit(date);
             setDate("");

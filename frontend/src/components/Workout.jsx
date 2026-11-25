@@ -6,12 +6,13 @@ import ExercisePanel from "./Exercise";
 import Modal from "./Modal"
 
 import { addExerciseToWorkout, getExerciseFromWorkout, removeExerciseFromWorkout } from "../api/workoutExercise";
-import { getExercises } from '../api/exercise';
+import { getExercises, createExercise } from '../api/exercise';
 
+// constants
+const addNewExerciseText = "-- Add New Exercise --";
 
-export default function WorkoutPanel( { date, onDelete, workoutId } ) {
+export default function WorkoutPanel( { date, onDelete, workoutId, handleCreateExercise, availableExercises } ) {
     const [exercises, setExercises] = useState([]);
-    const [exerciseList, setExerciseList] = useState([]); // list of exercises
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
     const [loading, setLoading] = useState(false);
@@ -32,14 +33,8 @@ export default function WorkoutPanel( { date, onDelete, workoutId } ) {
             .then((data) => { if (!ignore) setExercises(data); })
             .catch((err) => { if (!ignore) setError(err.message); })
             .finally(() => { if (!ignore) setLoading(false); });
-
-        getExercises()
-            .then((data) => { if (!ignore) setExerciseList(data); })
-            .catch((err) => { if (!ignore) setError(err.message); })
-            .finally(() => { if (!ignore) setLoading(false); });
-
         return () => { ignore = true }; 
-    }, []);
+    }, [workoutId]);
 
 
     const handleAddExercise = async (exerciseId) => {
@@ -86,20 +81,52 @@ export default function WorkoutPanel( { date, onDelete, workoutId } ) {
                 )}
             </ul>
             
-            <AddExerciseButton onClick={() => setModalIsOpen(true)}/>
+            <button onClick={() => setModalIsOpen(true)}>Add New Exercise</button>
+            <button onClick={onDelete}>Delete Workout</button>
 
             <Modal isOpen={modalIsOpen} title={"Add Exercise"} onClose={() => setModalIsOpen(false)}>
-                <ExerciseForm onSuccessfulSubmit={ handleAddExercise } exerciseList={exerciseList}/>
+                <ExerciseForm 
+                    onSuccessfulSubmit={ handleAddExercise }
+                    availableExercises={ availableExercises }
+                    onExerciseCreated={ handleCreateExercise }
+                    />
             </Modal>
             
-            <RemoveWorkoutButton onClick={onDelete}/>
         </div>
     );
 }
 
 /* Form component to add information for new exercise */
-function ExerciseForm( { onSuccessfulSubmit, exerciseList } ) {
+function ExerciseForm( { onSuccessfulSubmit, availableExercises, onExerciseCreated } ) {
     const [exerciseId, setExerciseId] = useState("");
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [createError, setCreateError] = useState("");
+
+    const handleCreateExercise = async (name, category) => {
+
+        try {
+            const created = await createExercise({ name, category }); // POST /api/exercise
+            onExerciseCreated(created);           // adds `created` to availableExercises in parent
+            setExerciseId(String(created.id));    // auto-selects it in the dropdown
+            setIsCreateModalOpen(false);          // closes the popup
+            return true;
+        }
+        catch (err) {
+            setCreateError(err.message);
+            return false;
+        }
+
+    }; 
+
+    const handleSelectChange = (e) => {
+        if (e.target.value == "__ADD_NEW__") {
+            setCreateError("");
+            setIsCreateModalOpen(true);
+            return;
+        }
+
+        setExerciseId(e.target.value);
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -118,35 +145,77 @@ function ExerciseForm( { onSuccessfulSubmit, exerciseList } ) {
 
             <select 
                 value={exerciseId}
-                onChange={(e) => setExerciseId(e.target.value)}
+                onChange={(e) => handleSelectChange(e)}
                 required>
                 <option value="" disabled>-- Select an Exercise --</option>
 
-                {exerciseList.map( (ex) => (
+                {availableExercises.map( (ex) => (
                     <option key={ex.id} value={ex.id}>
                     {ex.name} ({ex.category})
                     </option>
                 ))}
 
-                <option value="">-- Add New Exercise --</option>
+                <option value="__ADD_NEW__">{addNewExerciseText}</option>
 
             </select>
 
             <button type="submit">Submit</button>
 
         </form>
+
+        <Modal 
+            isOpen={isCreateModalOpen} 
+            onClose={() => setIsCreateModalOpen(false)}
+            title={"Create New Exercise"}>
+
+            <CreateNewExerciseForm createExercise={handleCreateExercise}></CreateNewExerciseForm>
+            {createError && <p role="alert">{createError}</p>}
+        </Modal>
     </>
     )
 }
 
-function AddExerciseButton( { onClick } ) {
-    return (
-        <button onClick={onClick}>Add New Exercise</button>
-    )
-}
+function CreateNewExerciseForm ( { createExercise } ) {
 
-function RemoveWorkoutButton( { onClick } ) {
+    const [name, setName] = useState("");
+    const [category, setCategory] = useState("");
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        // check if name and category is valid
+        if (name != "" && category != "") {
+            const success = await createExercise(name, category);
+            
+            if (success) {
+                setName("");
+                setCategory("");
+            }
+        }
+    }
+
+
     return (
-        <button onClick={onClick}>Delete Workout</button>
-    )
+        <>  
+            <form type="submit" onSubmit={handleSubmit}>
+                <label>Name of Exercise: </label>
+                <input 
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                />
+                <br/>
+
+                <label>Category: </label>
+                <input
+                    type="text"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                />
+                <br/>
+
+                <button type="submit">Submit</button>
+            </form>
+        </>
+    );
 }

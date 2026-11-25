@@ -7,7 +7,7 @@ export const getExercises = () => apiFetch("/exercise");
 export const createExercise = (data) => apiFetch("/exercise", { method: "POST", body: JSON.stringify(data)});
 
 // GET /api/exercise/:id
-export const getExercise = (id) => apiFetch(`/exericse/${id}`);
+export const getExercise = (id) => apiFetch(`/exercise/${id}`);
 
 // PUT /api/exercise/:id
 export const updateExercise = (id, data) => apiFetch(`/exercise/${id}`, { method: "PUT", body: JSON.stringify(data) });

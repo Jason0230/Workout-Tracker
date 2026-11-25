@@ -32,13 +32,24 @@ const createExercise = asyncHandler(async (req, res) => {
         throw new Error("All Fields are mandatory")
     }
 
-    const exercise = await prisma.exercise.create({
-        data: {
-            name, category, userId: req.user.id
-        }
-    })
+    try {
+        const exercise = await prisma.exercise.create({
+            data: {
+                name, category, userId: req.user.id
+            }
+        })
 
-    res.status(201).json(exercise);
+        res.status(201).json(exercise);
+    }
+    // catch duplication error
+    catch (err) {
+        if (err.code == "P2002") {
+            res.status(409);
+            throw new Error("You already have an exercise with that name");
+        }
+
+        throw err;
+    }
 });
 
 //@desc Get a single Exercise, with id
