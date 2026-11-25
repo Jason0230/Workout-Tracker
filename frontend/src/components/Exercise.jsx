@@ -16,7 +16,7 @@ export default function ExercisePanel( { name, category, onDelete, exerciseId, i
 
     const [sets, setSets] = useState([]);
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [isExpanded, setIsExpanded] = useState(!isCollapsed);
 

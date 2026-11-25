@@ -16,7 +16,7 @@ export default function WorkoutLog() {
     const [workouts, setWorkouts] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     const [exerciseList, setExercistList] = useState([]);
@@ -34,7 +34,8 @@ export default function WorkoutLog() {
             .then((data) => { if (!ignore) setExercistList(data); })
             .catch((err) => { if (!ignore) setError(err.message); })
             .finally(() => { if (!ignore) setLoading(false); });
-
+        
+        setLoading(false);
         return () => { ignore = true }; 
     }, []);
 
@@ -74,6 +75,8 @@ export default function WorkoutLog() {
 
             {error && <p role="alert">{error}</p>}
 
+            { loading ? <p>Loading...</p> :
+            <>
             <ul>
                 {workouts.map((w) => 
                     <li key={w.id}>
@@ -87,9 +90,10 @@ export default function WorkoutLog() {
                     </li>
                 )}
             </ul>
-
-            <AddWorkoutButton onClick={() => setModalIsOpen(true)}/>
-
+            
+            <button onClick={() => setModalIsOpen(true)}>Add New Workout</button>
+            </>}
+            
             <Modal isOpen={modalIsOpen} title={"Add Workout"} onClose={() => setModalIsOpen(false)}>
                 <WorkoutForm onSuccessfulSubmit={ handleCreateWorkout }/>
             </Modal>

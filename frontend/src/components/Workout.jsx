@@ -18,7 +18,7 @@ export default function WorkoutPanel( { date, onDelete, workoutId, handleCreateE
     const [isExpanded, setIsExpanded] = useState(false);
     
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
     // convert date into a format
@@ -36,7 +36,8 @@ export default function WorkoutPanel( { date, onDelete, workoutId, handleCreateE
             .then((data) => { if (!ignore) setExercises(data); })
             .catch((err) => { if (!ignore) setError(err.message); })
             .finally(() => { if (!ignore) setLoading(false); });
-
+        
+        setLoading(false);
         return () => { ignore = true }; 
     }, [workoutId]);
 
@@ -90,6 +91,9 @@ export default function WorkoutPanel( { date, onDelete, workoutId, handleCreateE
             <div className="workoutBody">
                 {error && <p role="alert">{error}</p>}
 
+                { loading ? <p>Loading exercises...</p> : 
+                
+                (<>
                 <ul className="exerciseList">
                     {exercises.map((e) => 
                         <li key={e.id}>  
@@ -104,8 +108,8 @@ export default function WorkoutPanel( { date, onDelete, workoutId, handleCreateE
                         </li>
                     )}
                 </ul>
-                
                 <button onClick={() => setModalIsOpen(true)}>Add New Exercise</button>
+                </>)}
             </div>
             }
             
