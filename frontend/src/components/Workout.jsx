@@ -51,7 +51,6 @@ export default function WorkoutPanel( { date, onDelete, workoutId, handleCreateE
 
             const createdExercise = await addExerciseToWorkout(workoutId, { exerciseId });
             setExercises([...exercises, createdExercise]);
-            setExerciseIsExpanded([...exerciseIsExpanded, true]);
             setModalIsOpen(false);
         }
         catch (err) {
