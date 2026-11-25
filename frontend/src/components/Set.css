@@ -1,4 +1,4 @@
-.setPanel, .set-header {
+.setPanel, .setHeader {
     display: grid;
     grid-template-columns: 60px 1fr 1fr 70px 36px;
     gap: 8px;

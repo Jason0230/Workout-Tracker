@@ -12,12 +12,13 @@ import Set from "./Set";
     
     Adding new set
 */
-export default function ExercisePanel( { name, category, onDelete, exerciseId } ) {
+export default function ExercisePanel( { name, category, onDelete, exerciseId, isCollapsed, onToggle } ) {
 
     const [sets, setSets] = useState([]);
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [isExpanded, setIsExpanded] = useState(!isCollapsed);
 
     useEffect(() => {
         let ignore = false;
@@ -65,37 +66,54 @@ export default function ExercisePanel( { name, category, onDelete, exerciseId } 
 
     return (
         <div className="exercisePanel">
-            <label className="exercisePanelLabel"> Exercise: {name}, Category: {category}</label>
 
-            {error && <p role="alert">{error}</p>}
-
-            {sets.length > 0 && (
-                <div className="set-header">
-                    <span className="setLabel">Set</span>
-                    <span>Reps</span>
-                    <span>Weight</span>
-                    <span>Unit</span>
-                    <span></span> {/* Empty header for the delete button column */}
-                </div>
-            )}
-
-            <ul className="setList">
-                {sets.map((set, index) => 
-                    <li key={set.id}>
-                        <Set
-                            set={set}
-                            index={index}
-                            onUpdate={handleUpdateSet}
-                            onDelete={handleDeleteSet}
-                            />
-                    </li>
-                )}
-
-            </ul>
+            <div className="exerciseHeader">
+                <button 
+                    className="exerciseToggle"
+                    type="button"
+                    onClick={() => {
+                        setIsExpanded((prev) => !prev)
+                        onToggle();
+                    }}>
+                    
+                    <span>{isExpanded ? "▼" : "▶"}</span>
+                    <label className="exercisePanelLabel"> Exercise: {name}, Category: {category}</label>
+                    <button className="delete" onClick={() => onDelete(exerciseId)}> Remove Exercise </button> 
+                </button>
             
-            <button onClick={handleQuickAddSet}> Add Set </button>
-            <button onClick={() => onDelete(exerciseId)}> Remove Exercise </button> 
+            </div>
 
+            {isExpanded && 
+                <div className="exerciseBody">
+                    {error && <p role="alert">{error}</p>}
+
+                    {sets.length > 0 && (
+                        <div className="setHeader">
+                            <span className="setLabel">Set</span>
+                            <span>Reps</span>
+                            <span>Weight</span>
+                            <span>Unit</span>
+                            <span></span> {/* Empty header for the delete button column */}
+                        </div>
+                    )}
+
+                    <ul className="setList">
+                        {sets.map((set, index) => 
+                            <li key={set.id}>
+                                <Set
+                                    set={set}
+                                    index={index}
+                                    onUpdate={handleUpdateSet}
+                                    onDelete={handleDeleteSet}
+                                    />
+                            </li>
+                        )}
+
+                    </ul>
+                    
+                    <button className="add" onClick={handleQuickAddSet}> Add Set </button>
+                </div>
+            }
         </div>
     );
 }

@@ -13,7 +13,10 @@ const addNewExerciseText = "-- Add New Exercise --";
 
 export default function WorkoutPanel( { date, onDelete, workoutId, handleCreateExercise, availableExercises } ) {
     const [exercises, setExercises] = useState([]);
+    const [collapsedIds, setCollapsedIds] = useState({});
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
+    
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
@@ -33,8 +36,13 @@ export default function WorkoutPanel( { date, onDelete, workoutId, handleCreateE
             .then((data) => { if (!ignore) setExercises(data); })
             .catch((err) => { if (!ignore) setError(err.message); })
             .finally(() => { if (!ignore) setLoading(false); });
+
         return () => { ignore = true }; 
     }, [workoutId]);
+
+    const toggleExercise = (id) => {
+        setCollapsedIds((prev) => ({ ...prev, [id]: !prev[id] }));
+    };
 
 
     const handleAddExercise = async (exerciseId) => {
@@ -43,6 +51,7 @@ export default function WorkoutPanel( { date, onDelete, workoutId, handleCreateE
 
             const createdExercise = await addExerciseToWorkout(workoutId, { exerciseId });
             setExercises([...exercises, createdExercise]);
+            setExerciseIsExpanded([...exerciseIsExpanded, true]);
             setModalIsOpen(false);
         }
         catch (err) {
@@ -63,35 +72,51 @@ export default function WorkoutPanel( { date, onDelete, workoutId, handleCreateE
     return (
         <div className="workoutPanel">
 
-            <label className="workoutPanelLabel">{date}</label>
+            <div className="workoutHeader"> 
 
-            {error && <p role="alert">{error}</p>}
+                <button 
+                    type="button"
+                    className="workoutToggle"
+                    onClick={() => setIsExpanded((prev) => !prev)}>
 
-            <ul className="exerciseList">
-                {exercises.map((e) => 
-                    <li key={e.id}>  
-                        <ExercisePanel 
-                            name={e.exercise.name} 
-                            category={e.exercise.category} 
-                            onDelete={() => handleDeleteExercise(e.id)}
-                            exerciseId={e.id}
-                        />
-                        
-                    </li>
-                )}
-            </ul>
+                    <span>{isExpanded ? "▼" : "▶"}</span>
+                    <span className="workoutPanelLabel">{date}</span>
+
+                    <button className="delete" onClick={onDelete}>Delete Workout</button>
+                </button>
+            </div>
+
+            {isExpanded && 
+
+            <div className="workoutBody">
+                {error && <p role="alert">{error}</p>}
+
+                <ul className="exerciseList">
+                    {exercises.map((e) => 
+                        <li key={e.id}>  
+                            <ExercisePanel 
+                                name={e.exercise.name} 
+                                category={e.exercise.category} 
+                                onDelete={() => handleDeleteExercise(e.id)}
+                                exerciseId={e.id}
+                                isCollapsed={!!collapsedIds[e.id]}
+                                onToggle={() => toggleExercise(e.id)}
+                            />
+                        </li>
+                    )}
+                </ul>
+                
+                <button onClick={() => setModalIsOpen(true)}>Add New Exercise</button>
+            </div>
+            }
             
-            <button onClick={() => setModalIsOpen(true)}>Add New Exercise</button>
-            <button onClick={onDelete}>Delete Workout</button>
-
             <Modal isOpen={modalIsOpen} title={"Add Exercise"} onClose={() => setModalIsOpen(false)}>
-                <ExerciseForm 
-                    onSuccessfulSubmit={ handleAddExercise }
-                    availableExercises={ availableExercises }
-                    onExerciseCreated={ handleCreateExercise }
-                    />
+                    <ExerciseForm 
+                        onSuccessfulSubmit={ handleAddExercise }
+                        availableExercises={ availableExercises }
+                        onExerciseCreated={ handleCreateExercise }
+                        />
             </Modal>
-            
         </div>
     );
 }
