@@ -12,8 +12,9 @@
   background: #234C6A;
   padding: 20px;
   border-radius: 8px;
-  min-width: 500px;
-  max-width: 90%;
+  min-width: 40%;
+  max-width: 400px;
+  width: 80%;
   height: 50vh;
 }
 

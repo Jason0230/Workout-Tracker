@@ -1,6 +1,6 @@
 .setPanel, .setHeader {
     display: grid;
-    grid-template-columns: 60px 1fr 1fr 70px 36px;
+    grid-template-columns: 30px 1fr 1fr 45px 36px;
     gap: 8px;
     align-items: center;
 }
@@ -19,16 +19,24 @@ set-header {
 }
 
 .setPanel {
-  margin: 6px 0;
+  margin: 5px 0;
 }
 
 .setPanel input::selection {
     background-color: black;
 }
 
-.setPanel input, select {
+.setPanel input {
     width: 100%;
-    min-width: 0;
+    min-width: 50px;
+    min-height: 25px;
+    border-radius: 8px;
+}
+
+.setPanel select {
+    width: 100%;
+    min-width: 40px;
+    max-width: 50px;
     min-height: 25px;
     border-radius: 8px;
 }
@@ -36,8 +44,13 @@ set-header {
 
 .setPanel span {
     width: 100%;
-    min-width: 0;
+    min-width: 0px;
     text-align: center;
     border: 1px solid;
     border-radius: 10px;
+}
+
+.setPanel button {
+    min-width: 30px;
+    min-width: 30px;
 }
