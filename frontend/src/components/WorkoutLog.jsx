@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 
 import WorkoutPanel from './Workout';
 import Modal from "./Modal";
+import Form from "./Form";
 
 import { getWorkouts, createWorkout, deleteWorkout, updateWorkout } from "../api/workout";
 import { getExercises } from '../api/exercise';
@@ -15,6 +16,7 @@ export default function WorkoutLog() {
 
     const [workouts, setWorkouts] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [editingWorkout, setEditingWorkout] = useState(null);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -51,6 +53,14 @@ export default function WorkoutLog() {
         }
     }
 
+    const handleEditWorkout = async (date) => {
+        const updated = await updateWorkout(editingWorkout.id, { date });
+        setWorkouts((prev) =>
+            prev.map((w) => (w.id === editingWorkout.id ? updated : w))
+        );
+        setEditingWorkout(null); // closes the modal
+    }
+
     const handleDeleteWorkout = async (workoutId) => {
         try {
             await deleteWorkout(workoutId);
@@ -82,6 +92,7 @@ export default function WorkoutLog() {
                     <li key={w.id}>
                         <WorkoutPanel 
                             date={w.date} 
+                            onEdit={() => setEditingWorkout(w)}
                             onDelete={() => handleDeleteWorkout(w.id)}
                             workoutId={ w.id }
                             handleCreateExercise={handleAddExercise}
@@ -95,44 +106,29 @@ export default function WorkoutLog() {
             </>}
             
             <Modal isOpen={modalIsOpen} title={"Add Workout"} onClose={() => setModalIsOpen(false)}>
-                <WorkoutForm onSuccessfulSubmit={ handleCreateWorkout }/>
+                <Form
+                    fields={[
+                        { name: "date", label: "Date: ", type: "date" }
+                    ]}
+                    initialValues={{ "date": new Date().toISOString().split("T")[0] }}
+                    onSubmit={({ date }) => handleCreateWorkout(date)}
+                    submitLabel="Submit"
+                />
             </Modal>
             
-        </>
-    );
-}
-
-function WorkoutForm( { onSuccessfulSubmit } ) {
-    const [date, setDate] = useState("");
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-
-        if (date != "") {
-            onSuccessfulSubmit(date);
-            setDate("");
-        }
-    };
-
-    return (
-        <>
-        <label>Add Workout</label>
-        <form type="submit" onSubmit={handleSubmit}>
-            Date: <input
-                type="date"
-                value={date}
-                name="date"
-                onChange={(e) => setDate(e.target.value)}
-            />
             
-            <button type="submit">Submit</button>
-        </form>
+            <Modal isOpen={!!editingWorkout} title={"Editing Workout"} onClose={() => setEditingWorkout(null)}>
+                {editingWorkout && (<Form
+                    fields={[
+                        { name: "date", label: "Date: ", type: "date" }
+                    ]}
+                    initialValues={{ "date": editingWorkout.date.slice(0, 10) }}
+                    onSubmit={({ date }) => handleEditWorkout(date)}
+                    submitLabel="Submit"
+                />)}
+             </Modal>
+            
+            
         </>
     );
-}
-
-function AddWorkoutButton( { onClick } ) {
-    return (
-        <button onClick={onClick}>Add New Workout</button>
-    )
 }

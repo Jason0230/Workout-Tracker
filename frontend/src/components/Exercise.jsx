@@ -5,6 +5,7 @@ import "./Set.css";
 import { useState, useEffect } from 'react';
 import { getSets, createSet, updateSet, deleteSet } from "../api/set";
 import Set from "./Set";
+import ActionMenu from "./ActionMenu";
 
 /* 
     Exercise Panel
@@ -12,7 +13,7 @@ import Set from "./Set";
     
     Adding new set
 */
-export default function ExercisePanel( { name, category, onDelete, exerciseId, isCollapsed, onToggle } ) {
+export default function ExercisePanel( { name, category, onDelete, onEdit, exerciseId, isCollapsed, onToggle } ) {
 
     const [sets, setSets] = useState([]);
 
@@ -78,9 +79,8 @@ export default function ExercisePanel( { name, category, onDelete, exerciseId, i
                     
                     <span>{isExpanded ? "▼" : "▶"}</span>
                     <label className="exercisePanelLabel"> Exercise: {name}, Category: {category}</label>
-                    <button className="delete" onClick={() => onDelete(exerciseId)}> Remove Exercise </button> 
                 </button>
-            
+                <ActionMenu onEdit={onEdit} onDelete={onDelete}/>
             </div>
 
             {isExpanded && 

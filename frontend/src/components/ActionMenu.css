@@ -1,0 +1,36 @@
+.actionMenu {
+  position: relative;
+  display: inline-flex; /* hugs the button tightly */
+  margin-right: 10px;
+}
+
+.menuDropdown {
+  position: absolute;
+  top: 100%; /* sits 4px right below the button */;
+  right: 0;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  min-width: 110px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.menuDropdown button {
+  padding: 8px 12px;
+  text-align: left;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.menuDropdown button:hover {
+  background: #f3f4f6;
+}
+
+.menuDropdown button.danger {
+  color: #F54927;
+}

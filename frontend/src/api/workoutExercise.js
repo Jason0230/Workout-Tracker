@@ -11,3 +11,8 @@ export const getExerciseFromWorkout = (workoutId) =>
 // DELETE /api/workout-exercise/:id
 export const removeExerciseFromWorkout = (workoutId, workoutExerciseId) => 
     apiFetch(`/workout/${workoutId}/exercise/${workoutExerciseId}`, { method: "DELETE" });
+
+// DELETE /api/workout-exercise/:id
+export const updateWorkoutExercise = (workoutId, workoutExerciseId, data) => 
+    apiFetch(`/workout/${workoutId}/exercise/${workoutExerciseId}`, { method: "PUT", body: JSON.stringify(data) });
+

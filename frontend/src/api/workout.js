@@ -12,9 +12,9 @@ export const createWorkout = (data) => apiFetch("/workout", { method: "POST", bo
 export const getWorkout = (id) => apiFetch(`/workout/${id}`);
 
 // PUT /api/workout/:id (private)
-export const updateWorkout = (id, data) => {
+export const updateWorkout = (id, data) => 
     apiFetch(`/workout/${id}`, { method: "PUT", body: JSON.stringify(data) });
-}
+
 
 // DELETE /api/workout/:id
 export const deleteWorkout = (id) => {

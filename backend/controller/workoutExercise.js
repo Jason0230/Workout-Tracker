@@ -90,4 +90,43 @@ const removeExerciseFromWorkout = asyncHandler(async (req, res) => {
     res.status(200).json(existing);
 });
 
-module.exports = { addExerciseToWorkout, getExerciseFromWorkout, removeExerciseFromWorkout };
+// Changes the exericise of a workout
+//@route PUT /api/workout/:workoutId/exercise/:workoutExerciseId
+const updateExerciseWorkout = asyncHandler(async (req, res) => {
+
+    console.log("BODY:", req.body, "PARAMS:", req.params);
+    const workoutExercise = await prisma.workoutExercise.findFirst( { 
+        where: {
+            id: Number(req.params.workoutExerciseId),
+            workoutId: Number(req.params.workoutId),
+            workout: { userId: req.user.id },
+        },
+    } );
+
+    if (!workoutExercise) {
+        res.status(404);
+        throw new Error("Workout exercise not Found");
+    }
+
+    const { exerciseId } = req.body;
+
+    if (!exerciseId) {
+        res.status(400);
+        throw new Error("All Fields are mandatory");
+    }
+
+    const updatedWorkoutExercise = await prisma.workoutExercise.update( {
+        where: {
+            id: Number(req.params.workoutExerciseId),
+            workoutId: Number(req.params.workoutId),
+            workout: { userId: req.user.id },
+        },
+
+        data: { exerciseId: Number(exerciseId) },
+        include: { exercise: true },
+    });
+
+    res.status(201).json(updatedWorkoutExercise);
+})
+
+module.exports = { addExerciseToWorkout, getExerciseFromWorkout, removeExerciseFromWorkout, updateExerciseWorkout };

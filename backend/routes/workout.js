@@ -11,12 +11,13 @@ const {
 const {
     addExerciseToWorkout,
     getExerciseFromWorkout,
-    removeExerciseFromWorkout
+    removeExerciseFromWorkout,
+    updateExerciseWorkout
 } = require("../controller/workoutExercise");
 
 router.route("/").get(getWorkouts).post(createWorkout);
 router.route("/:id").get(getWorkout).put(updateWorkout).delete(deleteWorkout);
 router.route("/:workoutId/exercise").get(getExerciseFromWorkout).post(addExerciseToWorkout);
-router.route("/:workoutId/exercise/:workoutExerciseId").delete(removeExerciseFromWorkout);
+router.route("/:workoutId/exercise/:workoutExerciseId").put(updateExerciseWorkout).delete(removeExerciseFromWorkout);
 
 module.exports = router;    
