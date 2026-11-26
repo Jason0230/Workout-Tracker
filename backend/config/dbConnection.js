@@ -1,10 +1,5 @@
 const {PrismaClient} = require("../generated");
-const prisma = new PrismaClient({log: [
-    { emit: 'stdout', level: 'query' }, // Logs the actual SQL/MongoDB query
-    { emit: 'stdout', level: 'info' },
-    { emit: 'stdout', level: 'warn' },
-    { emit: 'stdout', level: 'error' }, // Logs query execution errors
-  ],});
+const prisma = new PrismaClient();
 
 const connectDb = async () => {
   try {

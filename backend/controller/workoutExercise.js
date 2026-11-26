@@ -93,8 +93,6 @@ const removeExerciseFromWorkout = asyncHandler(async (req, res) => {
 // Changes the exericise of a workout
 //@route PUT /api/workout/:workoutId/exercise/:workoutExerciseId
 const updateExerciseWorkout = asyncHandler(async (req, res) => {
-
-    console.log("BODY:", req.body, "PARAMS:", req.params);
     const workoutExercise = await prisma.workoutExercise.findFirst( { 
         where: {
             id: Number(req.params.workoutExerciseId),

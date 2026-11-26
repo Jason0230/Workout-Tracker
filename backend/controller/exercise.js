@@ -24,7 +24,6 @@ const getExercises = asyncHandler(async (req, res) => {
 //@param {string} name - Name of new Exercise
 //@param {string} category - Category for new Exercise
 const createExercise = asyncHandler(async (req, res) => {
-    console.log(req.body);
     const { name, category } = req.body;
 
     if (!name || ! category) {

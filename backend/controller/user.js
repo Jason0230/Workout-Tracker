@@ -2,7 +2,6 @@ const asyncHandler = require("express-async-handler");
 const { prisma } = require("../config/dbConnection");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { dmmfToRuntimeDataModel } = require("../generated/runtime/library");
 
 //@desc Creates a new User (Register)
 //@route POST /api/user
@@ -201,8 +200,8 @@ const loginUser = asyncHandler(async (req, res) => {
     
     res.cookie("jwt", refreshToken, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // only HTTPS in prod
-        sameSite: "strict",
+        secure: process.env.NODE_ENV === "production", 
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in ms
     })
 
@@ -271,7 +270,7 @@ const refreshToken = asyncHandler(async (req, res) => {
         res.cookie("jwt", newRefreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: "strict",
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
@@ -408,7 +407,7 @@ const demoUserLogin = asyncHandler(async (req, res) => {
     res.cookie("jwt", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         maxAge: 24 * 60 * 60 * 1000,
     });
     

@@ -6,16 +6,17 @@ const connectDb = require("./config/dbConnection")
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 
-const port = process.env.PORT || 5200;
+const port = process.env.PORT;
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: process.env.FRONTEND_URL,
     credentials: true,
 }));
 
 const validateToken = require("./middleware/validateTokenHandler");
 
 connectDb();
+app.set("trust proxy", 1);
 app.use(express.json());
 app.use(cookieParser());
 app.use("/api/exercise", validateToken, require("./routes/exercise"));

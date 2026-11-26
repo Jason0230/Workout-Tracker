@@ -1,5 +1,5 @@
 
-const API_BASE = "http://localhost:5200/api";
+const API_BASE = import.meta.env.VITE_APP_API_URL;
 
 let accessToken = null;
 let refreshPromise = null;
