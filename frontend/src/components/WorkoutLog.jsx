@@ -4,6 +4,8 @@ import WorkoutPanel from './Workout';
 import Modal from "./Modal";
 import Form from "./Form";
 
+import "./WorkoutLog.css";
+
 import { getWorkouts, createWorkout, deleteWorkout, updateWorkout } from "../api/workout";
 import { getExercises } from '../api/exercise';
 import { useAuth } from "../context/AuthContext";
@@ -17,6 +19,7 @@ export default function WorkoutLog() {
     const [workouts, setWorkouts] = useState([]);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [editingWorkout, setEditingWorkout] = useState(null);
+    const [newestFirst, setNewestFirst] = useState(true);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -41,6 +44,12 @@ export default function WorkoutLog() {
         return () => { ignore = true }; 
     }, []);
 
+
+    const sortedWorkouts = [...workouts].sort((a, b) =>
+        newestFirst
+        ? new Date(b.date) - new Date(a.date)
+        : new Date(a.date) - new Date(b.date)
+    );
 
     const handleCreateWorkout = async (date) => {
         try {
@@ -78,57 +87,73 @@ export default function WorkoutLog() {
     if (loading) return <p>Loading...</p>;
 
     return (
-        <>
-            <button onClick={logout}>Logout</button>
+        <div className="workoutLog">
 
-            <label> Workout Log </label>
+            <div className="workoutLogHeader">
 
-            {error && <p role="alert">{error}</p>}
+                <h1> Workout Log </h1>
 
-            { loading ? <p>Loading...</p> :
-            <>
-            <ul>
-                {workouts.map((w) => 
-                    <li key={w.id}>
-                        <WorkoutPanel 
-                            date={w.date} 
-                            onEdit={() => setEditingWorkout(w)}
-                            onDelete={() => handleDeleteWorkout(w.id)}
-                            workoutId={ w.id }
-                            handleCreateExercise={handleAddExercise}
-                            availableExercises={exerciseList}
-                        />
-                    </li>
-                )}
-            </ul>
+                <div className="workoutLogHeaderActions">
+
+                    <button className="btn-addWorkout btn-primary" onClick={() => setModalIsOpen(true)}>+ Add Workout</button>
+                    <button className="btn-sort btn-primary" onClick={() => setNewestFirst((prev) => !prev)}>Sort: {newestFirst ? "Newest ↓" : "Oldest ↑"}</button>
+                    <button className= "btn-logout btn-primary" onClick={logout}>Logout</button>
+                    
+                </div>
+                
+            </div>
+
+            <div className="workoutLogBody">
+                {error && <p role="alert">{error}</p>}
+                
+
+                { workouts.length == 0 ? 
+                    <p className="emptyState">No workouts yet. Click "+ Add Workout" to start.</p> :
+                    
+                    <ul>
+                    {sortedWorkouts.map((w) => 
+                        <li key={w.id}>
+                            <WorkoutPanel 
+                                date={w.date} 
+                                onEdit={() => setEditingWorkout(w)}
+                                onDelete={() => handleDeleteWorkout(w.id)}
+                                workoutId={ w.id }
+                                handleCreateExercise={handleAddExercise}
+                                availableExercises={exerciseList}
+                            />
+                        </li>
+                    )}
+                </ul>
+                }
+                
+                <Modal isOpen={modalIsOpen} title={"Add Workout"} onClose={() => setModalIsOpen(false)}>
+                    <Form
+                        fields={[
+                            { name: "date", label: "Date: ", type: "date" }
+                        ]}
+                        initialValues={{ "date": new Date().toISOString().split("T")[0] }}
+                        onSubmit={({ date }) => handleCreateWorkout(date)}
+                        submitLabel="Submit"
+                    />
+                </Modal>
+                
+                
+                <Modal isOpen={!!editingWorkout} title={"Editing Workout"} onClose={() => setEditingWorkout(null)}>
+                    {editingWorkout && (<Form
+                        fields={[
+                            { name: "date", label: "Date: ", type: "date" }
+                        ]}
+                        initialValues={{ "date": editingWorkout.date.slice(0, 10) }}
+                        onSubmit={({ date }) => handleEditWorkout(date)}
+                        submitLabel="Submit"
+                    />)}
+                </Modal>
+            </div>
+
             
-            <button onClick={() => setModalIsOpen(true)}>Add New Workout</button>
-            </>}
-            
-            <Modal isOpen={modalIsOpen} title={"Add Workout"} onClose={() => setModalIsOpen(false)}>
-                <Form
-                    fields={[
-                        { name: "date", label: "Date: ", type: "date" }
-                    ]}
-                    initialValues={{ "date": new Date().toISOString().split("T")[0] }}
-                    onSubmit={({ date }) => handleCreateWorkout(date)}
-                    submitLabel="Submit"
-                />
-            </Modal>
             
             
-            <Modal isOpen={!!editingWorkout} title={"Editing Workout"} onClose={() => setEditingWorkout(null)}>
-                {editingWorkout && (<Form
-                    fields={[
-                        { name: "date", label: "Date: ", type: "date" }
-                    ]}
-                    initialValues={{ "date": editingWorkout.date.slice(0, 10) }}
-                    onSubmit={({ date }) => handleEditWorkout(date)}
-                    submitLabel="Submit"
-                />)}
-             </Modal>
             
-            
-        </>
+        </div>
     );
 }

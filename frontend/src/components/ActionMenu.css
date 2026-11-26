@@ -12,8 +12,8 @@
   display: flex;
   flex-direction: column;
   min-width: 110px;
-  background: var(--card);
-  border: 1px solid var(--border);
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   overflow: hidden;
@@ -28,7 +28,7 @@
 }
 
 .menuDropdown button:hover {
-  background: #f3f4f6;
+  background: var(--text-muted);
 }
 
 .menuDropdown button.danger {

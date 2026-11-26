@@ -125,7 +125,7 @@ export default function WorkoutPanel( { date, onEdit, onDelete, workoutId, handl
                         </li>
                     )}
                 </ul>
-                <button className="addExercise" onClick={() => setCreateModalIsOpen(true)}>Add New Exercise</button>
+                <button className="addExercise btn-secondary" onClick={() => setCreateModalIsOpen(true)}>Add New Exercise</button>
                 </>)}
             </div>
             }

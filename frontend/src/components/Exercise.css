@@ -1,7 +1,7 @@
 
 .exercisePanel {
-    background: var(--card);
-    border: 1px solid var(--border);
+    background: var(--bg-card);
+    border: 1px solid var(--border-default);
     border-radius: 8px;
     width: 90%;
     margin-inline: auto;
@@ -10,9 +10,7 @@
     flex-direction: column;
 }
 
-button .add {
-    max-width: 10%;
-}
+
 
 .exerciseHeader {
     display: flex;
@@ -26,6 +24,10 @@ button .add {
     display: flex;
     align-items: center;
     border: 0px;
+}
+
+.exerciseToggle:hover {
+    background: rgb(0, 0, 0, 0);
 }
 
 .exerciseBody {

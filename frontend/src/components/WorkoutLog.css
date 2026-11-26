@@ -1,0 +1,50 @@
+.workoutLog {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.workoutLogHeader {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+
+.workoutLogHeader h1 {
+    font-size: 50px;
+    margin-inline:auto;
+}
+
+.workoutLogHeaderActions {
+    display: flex;
+    flex-direction: row;
+}
+
+.workoutLogBody ul {
+    width:100%;
+}
+
+.btn-addWorkout .btn-sort {
+    margin-right: auto;
+}
+
+.btn-logout {
+    margin-left: auto;
+}
+
+.workoutLogBody {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.emptyState {
+  text-align: center;
+  color: var(--text-muted);
+  padding: 48px 16px;
+  border: 1px dashed var(--border-default);
+  border-radius: 8px;
+}
