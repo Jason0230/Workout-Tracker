@@ -324,4 +324,59 @@ const getMe = asyncHandler(async (req, res) => {
     res.status(200).json(user);
 });
 
-module.exports = { createUser, getUser, updateUser, deleteUser, loginUser, refreshToken, logoutUser, getMe };
+
+//@desc Creates and Logins into a demo user with seeded workouts, demo account lasts for 1 day
+//@route POST /api/user/demo
+//@access public
+const demoUserLogin = asyncHandler(async (req, res) => {
+
+    // Delete Demo users that are 1 day old
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+    await prisma.user.deleteMany({
+        where: {
+        email: { endsWith: "@demo.local" },
+        createdAt: { lt: oneDayAgo },
+        },
+    }); 
+
+    // Generate Unique Key 
+    const uniqueId = `${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+    const hashedPassword = await bcrypt.hash(uniqueId, 10);
+
+    const demoUser = await prisma.user.create( {
+        data: {
+            username: "Demo User",
+            email: `demo_${uniqueId}@demo.local`,
+            password: hashedPassword
+        }
+    });
+
+    // TODO seed exercises for demo users
+
+
+    const accessToken = jwt.sign({ user: { id: demoUser.id, username: demoUser.username, email: demoUser.email } }, 
+                                    process.env.JWT_SECRET,
+                                    { expiresIn: "15min" }
+                                );
+
+    const refreshToken = jwt.sign(
+            { id: demoUser.id },
+            process.env.JWT_REFRESH_SECRET,
+            { expiresIn: "1d" }
+    );
+
+    // set the first refresh token
+    await prisma.user.update({ where: { id: demoUser.id }, data: { refreshToken: refreshToken } });
+
+    res.cookie("jwt", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 24 * 60 * 60 * 1000,
+    });
+    
+    res.status(200).json({ accessToken })         
+});
+
+
+module.exports = { createUser, getUser, updateUser, deleteUser, loginUser, refreshToken, logoutUser, getMe, demoUserLogin };

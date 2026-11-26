@@ -6,7 +6,7 @@ import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
 
-    const { login } = useAuth();
+    const { login, demoLogin } = useAuth();
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
@@ -31,6 +31,23 @@ export default function Login() {
             setSubmitting(false);
         }
         
+    }
+
+    const handleDemoSubmit = async (e) => {
+        e.preventDefault();
+        setError("");
+        setSubmitting(true);
+
+        try {
+            await demoLogin();
+            navigate("/");
+        }
+        catch (err) {
+            setError(err.message);   // "Invalid Email or Password"
+        }
+        finally {
+            setSubmitting(false);
+        }
     }
 
     return (
@@ -62,6 +79,7 @@ export default function Login() {
                 
 
                 <p>No account? <Link to="/register">Register</Link></p>
+                <button onClick={handleDemoSubmit}>Use Demo Instead?</button>
 
                 {error && <p role="alert">{error}</p>}
             </form>
