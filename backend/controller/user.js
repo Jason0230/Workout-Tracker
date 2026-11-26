@@ -352,6 +352,43 @@ const demoUserLogin = asyncHandler(async (req, res) => {
     });
 
     // TODO seed exercises for demo users
+    const exercises = await prisma.exercise.findMany({
+        where: { userId: null },
+        take: 4,
+    });
+
+    if (exercises.length >= 2) {
+        await prisma.workout.create( {
+            data: {
+                userId: demoUser.id,
+                date: new Date(Date.now()),
+                workoutExercises: {
+                    create: [
+                        {
+                            exerciseId: exercises[0].id,
+                            sets: {
+                                create: [
+                                    { reps: 8, weight: 135, weight_unit: "lb", order: 1 },
+                                    { reps: 8, weight: 155, weight_unit: "lb", order: 2 },
+                                    { reps: 6, weight: 175, weight_unit: "lb", order: 3 },
+                                ]
+                            }
+                        },
+                        {
+                            exerciseId: exercises[1].id,
+                            sets: {
+                                create: [
+                                    { reps: 10, weight: 95, weight_unit: "lb", order: 1 },
+                                    { reps: 10, weight: 105, weight_unit: "lb", order: 2 },
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+
+        } );
+    }
 
 
     const accessToken = jwt.sign({ user: { id: demoUser.id, username: demoUser.username, email: demoUser.email } }, 
