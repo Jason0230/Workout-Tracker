@@ -8,6 +8,7 @@ import ActionMenu from "./ActionMenu";
 import ExerciseForm from "./ExerciseForm";
 
 import { addExerciseToWorkout, getExerciseFromWorkout, updateWorkoutExercise, removeExerciseFromWorkout } from "../api/workoutExercise";
+import { createSet } from "../api/set";
 
 export default function WorkoutPanel( { date, onEdit, onDelete, workoutId, handleCreateExercise, availableExercises, imExpanded } ) {
     const [exercises, setExercises] = useState([]);
@@ -49,6 +50,7 @@ export default function WorkoutPanel( { date, onEdit, onDelete, workoutId, handl
             setError("");
 
             const createdExercise = await addExerciseToWorkout(workoutId, { exerciseId });
+            await createSet(createdExercise.id, { reps: 0, weight: 0, weight_unit: "lb" } );
             setExercises([...exercises, createdExercise]);
             setCreateModalIsOpen(false);
         }
