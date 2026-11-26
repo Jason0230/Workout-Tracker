@@ -9,12 +9,12 @@ import ExerciseForm from "./ExerciseForm";
 
 import { addExerciseToWorkout, getExerciseFromWorkout, updateWorkoutExercise, removeExerciseFromWorkout } from "../api/workoutExercise";
 
-export default function WorkoutPanel( { date, onEdit, onDelete, workoutId, handleCreateExercise, availableExercises } ) {
+export default function WorkoutPanel( { date, onEdit, onDelete, workoutId, handleCreateExercise, availableExercises, imExpanded } ) {
     const [exercises, setExercises] = useState([]);
     const [collapsedIds, setCollapsedIds] = useState({});
     const [createModalIsOpen, setCreateModalIsOpen] = useState(false);
     const [editingExercise, setEditingExercise] = useState(null);
-    const [isExpanded, setIsExpanded] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(imExpanded);
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
@@ -125,7 +125,7 @@ export default function WorkoutPanel( { date, onEdit, onDelete, workoutId, handl
                         </li>
                     )}
                 </ul>
-                <button className="addExercise btn-secondary" onClick={() => setCreateModalIsOpen(true)}>Add New Exercise</button>
+                <button className="addExercise" onClick={() => setCreateModalIsOpen(true)}>Add New Exercise</button>
                 </>)}
             </div>
             }

@@ -17,6 +17,7 @@ export default function WorkoutLog() {
     const { logout } = useAuth();
 
     const [workouts, setWorkouts] = useState([]);
+    const [expandedWorkouts, setExpandedWorkouts] = useState({});
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [editingWorkout, setEditingWorkout] = useState(null);
     const [newestFirst, setNewestFirst] = useState(true);
@@ -55,6 +56,7 @@ export default function WorkoutLog() {
         try {
             const createdWorkout = await createWorkout({ date });
             setWorkouts([...workouts, createdWorkout]);
+            setExpandedWorkouts((prev) => ({ ...prev, [createdWorkout.id]: true }));
             setModalIsOpen(false);
         } 
         catch (err) {
@@ -120,6 +122,7 @@ export default function WorkoutLog() {
                                 workoutId={ w.id }
                                 handleCreateExercise={handleAddExercise}
                                 availableExercises={exerciseList}
+                                imExpanded={expandedWorkouts[w.id]}
                             />
                         </li>
                     )}
