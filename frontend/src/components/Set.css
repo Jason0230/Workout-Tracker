@@ -1,6 +1,6 @@
 .setPanel, .setHeader {
     display: grid;
-    grid-template-columns: 30px 1fr 1fr 50px 35px;
+    grid-template-columns: 30px 1fr 1fr 60px 35px;
     gap: 8px;
     align-items: center;
 }
