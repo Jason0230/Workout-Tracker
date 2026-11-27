@@ -2,9 +2,6 @@
 
 A full-stack workout tracking web application for logging exercises, sets, and training progress, built with React, Express, Prisma, and MySQL.
 
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-Vercel-black?style=for-the-badge&logo=vercel)](https://workout-tracker-web-app.vercel.app)
-[![Backend](https://img.shields.io/badge/API-Railway-0B0D0E?style=for-the-badge&logo=railway)](https://railway.app)
-
 **Live App:** [https://workout-tracker-web-app.vercel.app](https://workout-tracker-web-app.vercel.app)
 
 ---
