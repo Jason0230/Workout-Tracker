@@ -1,11 +1,13 @@
 .vercel
 .vscode
-.env*
+.env
 
 # backend
 backend/node_modules/
 
 backend/generated/prisma
+backend/.env
+backend/.env.local
 
 # Logs
 frontend/logs
@@ -19,6 +21,9 @@ frontend/lerna-debug.log*
 frontend/node_modules
 frontend/dist
 frontend/dist-ssr
+
+frontend/.env
+frontend/.env.local
 *.local
 
 # Editor directories and files
