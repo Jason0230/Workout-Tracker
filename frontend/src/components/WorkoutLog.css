@@ -24,6 +24,10 @@
 
 .workoutLogBody ul {
     width:100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin:10px;
 }
 
 .btn-addWorkout .btn-sort {
