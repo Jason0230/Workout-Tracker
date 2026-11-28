@@ -270,7 +270,7 @@ const refreshToken = asyncHandler(async (req, res) => {
         res.cookie("jwt", newRefreshToken, {
             httpOnly: true,
             secure: process.env.NODE_ENV === "production",
-            sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+            sameSite: process.env.NODE_ENV === "production",
             maxAge: 7 * 24 * 60 * 60 * 1000,
         });
 
@@ -350,7 +350,6 @@ const demoUserLogin = asyncHandler(async (req, res) => {
         }
     });
 
-    // TODO seed exercises for demo users
     const exercises = await prisma.exercise.findMany({
         where: { userId: null },
         take: 4,
@@ -407,7 +406,7 @@ const demoUserLogin = asyncHandler(async (req, res) => {
     res.cookie("jwt", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        sameSite: process.env.NODE_ENV === "production",
         maxAge: 24 * 60 * 60 * 1000,
     });
     
