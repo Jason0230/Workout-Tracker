@@ -109,7 +109,7 @@ cd frontend
 npm install
 cp .env.example .env
 ```
-Ensure `frontend/.env` points to your local backend (`VITE_API_URL=http://localhost:{PORT}/api`), then start the dev server:
+Ensure `frontend/.env` points to your local backend (`VITE_API_URL=http://localhost:{PORT}`), then start the dev server:
 ```bash
 npm run dev
 ```
@@ -131,7 +131,7 @@ npm run dev
 ### Frontend (`frontend/.env`)
 | Variable | Description | Example |
 | :--- | :--- | :--- |
-| `VITE_API_URL` | Base URL for backend API requests | `http://localhost:5200/api` |
+| `VITE_API_URL` | Base URL for backend API requests | `http://localhost:5200` |
 
 ---
 
