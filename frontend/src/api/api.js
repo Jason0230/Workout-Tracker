@@ -1,5 +1,5 @@
 
-const API_BASE = import.meta.env.VITE_APP_API_URL;
+const API_BASE = import.meta.env.VITE_APP_API_URL + "/api";
 
 let accessToken = null;
 let refreshPromise = null;
