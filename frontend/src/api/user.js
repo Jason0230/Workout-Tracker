@@ -51,4 +51,8 @@ export const deleteUser = (id) => {
 export const getMe = () => apiFetch("/user/me");
 
 // POST /api/user/demo (public) creates and logins into demo user
-export const demoLogin = () => apiFetch("/user/demo", { method: "POST" });
+export const demoLogin = () => {
+    const data = apiFetch("/user/demo", { method: "POST" });
+    setAccessToken(data.accessToken);
+    return data;
+}
